@@ -93,8 +93,8 @@ namespace HLTools.WAD
 		
 		public static WADFile ReadWADFile(this BinaryReader br)
 		{
-			return new WADFile(br.BReadUInt32(), br.BReadUInt32(), br.BReadUInt32(), br.ReadByte(), 
-			                   br.ReadByte(), br.ReadByte(), br.ReadByte(), 
+			return new WADFile(br.BReadUInt32(), br.BReadUInt32(), br.BReadUInt32(), br.ReadByte(),
+			                   br.ReadByte(), br.ReadByte(), br.ReadByte(),
 			                   Encoding.ASCII.GetString(br.ReadBytes(16)).TrimEnd(new char[] { '\0' })
 			                   );
 		}
@@ -122,8 +122,7 @@ namespace HLTools.WAD
 		
 		public void LoadFiles()
 		{
-			if (OnLoadFile != null)
-			{
+			if (OnLoadFile != null) {
 				br.BaseStream.Seek(Offset, SeekOrigin.Begin);
 				for (int i = 0; i < FileCount; i++) {
 					OnLoadFile(br.ReadWADFile());
@@ -138,7 +137,9 @@ namespace HLTools.WAD
 		
 		public static bool CheckMagic(byte[] bytes, int startindex)
 		{
-			if (bytes.Length < startindex + 4) return false;
+			if (bytes.Length < startindex + 4) {
+				return false;
+			}
 			string m = Encoding.ASCII.GetString(bytes, startindex, 4);
 			return (m == MagicString);
 		}

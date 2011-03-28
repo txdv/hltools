@@ -534,14 +534,18 @@ namespace HLTools.BSP
 			br.BaseStream.Seek(MipTextures.offset, SeekOrigin.Begin);
 			int size = br.BReadInt32();
 			MipTextureOffsets = new int[size];
-			for (int j = 0; j < size; j++) MipTextureOffsets[j] = br.BReadInt32();
+			for (int j = 0; j < size; j++) { 
+				MipTextureOffsets[j] = br.BReadInt32();
+			}
 			return true;
 		}
 		public bool LoadMipTextures()
 		{
-			if (MipTextureOffsets == null) return false;
-			foreach(int offset in MipTextureOffsets)
-			{
+			if (MipTextureOffsets == null) {
+				return false;
+			}
+			
+			foreach (int offset in MipTextureOffsets) {
 				br.BaseStream.Seek(MipTextures.offset + offset, SeekOrigin.Begin);
 				OnLoadMipTexture(br.BReadMipTexture());
 			}
