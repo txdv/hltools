@@ -14,13 +14,14 @@ namespace HLTools.BSP.Test
 				}
 			} else {
 				LoadBSPMap("de_dust.bsp");
-				// LoadEntities("de_Dust.bsp");
+				// LoadEntities("de_dust.bsp");
+				// LoadEntities2("de_dust.bsp");
 			}
 		}
 		
 		public static void LoadEntities(string file)
 		{
-			FileStream fs = File.OpenRead("de_dust.bsp");
+			FileStream fs = File.OpenRead(file);
 			BSPParser p = new BSPParser(fs);
 			if (p.LoadDirectoryTables()) {
 				string entities = p.ReadEntities();
@@ -36,6 +37,27 @@ namespace HLTools.BSP.Test
 				}
 				
 				Console.WriteLine ();
+			}
+		}
+		
+		public static void LoadEntities2(string file)
+		{
+			FileStream fs = File.OpenRead(file);
+			BSPParser p = new BSPParser(fs);
+			if (p.LoadDirectoryTables()) {
+				string entities = p.ReadEntities();
+				Console.WriteLine (entities);
+				EntityParser ep = new EntityParser(entities);
+				var ent = ep.ReadEntities();
+				
+				Console.WriteLine (ent["worldspawn"][0]["wad"]);
+				Console.WriteLine (ent["worldspawn"][0]["skyname"]);
+				if (ent.ContainsKey("ambient_generic")) {
+					var sounds = ent["ambient_generic"];
+					foreach (var sound in sounds) {
+						Console.WriteLine (sound["message"]);	
+					}
+				}
 			}
 		}
 		

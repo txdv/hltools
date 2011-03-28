@@ -96,6 +96,19 @@ namespace HLTools.BSP
 			return dict;
 		}
 		
+		public Dictionary<string, List<Dictionary<string, string>>> ReadEntities()
+		{
+			Dictionary<string, List<Dictionary<string, string>>> ret = new Dictionary<string, List<Dictionary<string, string>>>();
+			
+			foreach (var entity in Entities) {
+				if (!ret.ContainsKey(entity["classname"])) {
+					ret[entity["classname"]] = new List<Dictionary<string, string>>();
+				}
+				ret[entity["classname"]].Add(entity);
+			}
+			return ret;
+		}
+		
 		public IEnumerable<Dictionary<string, string>> Entities {
 			get {
 				Dictionary<string, string> entity = null;
