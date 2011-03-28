@@ -36,6 +36,7 @@
   <ItemGroup>
     <Compile Include="BSPParser.cs" />
     <Compile Include="AssemblyInfo.cs" />
+    <Compile Include="EntityParser.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>

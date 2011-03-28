@@ -14,6 +14,28 @@ namespace HLTools.BSP.Test
 				}
 			} else {
 				LoadBSPMap("de_dust.bsp");
+				// LoadEntities("de_Dust.bsp");
+			}
+		}
+		
+		public static void LoadEntities(string file)
+		{
+			FileStream fs = File.OpenRead("de_dust.bsp");
+			BSPParser p = new BSPParser(fs);
+			if (p.LoadDirectoryTables()) {
+				string entities = p.ReadEntities();
+				EntityParser ep = new EntityParser(entities);
+				
+				foreach (var entity in ep.Entities) {
+					Console.Write("{");
+					foreach (var kvp in entity) {
+						Console.Write(kvp);	
+						Console.Write(",");
+					}
+					Console.WriteLine("}");
+				}
+				
+				Console.WriteLine ();
 			}
 		}
 		
