@@ -37,4 +37,10 @@
     <Compile Include="AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <ItemGroup>
+    <ProjectReference Include="..\BSP\BSP.csproj">
+      <Project>{F275195F-D129-4681-8320-6359DEBB638D}</Project>
+      <Name>BSP</Name>
+    </ProjectReference>
+  </ItemGroup>
 </Project>
