@@ -8,7 +8,13 @@ namespace HLTools.BSP.Test
 	{
 		public static void Main(string[] args)
 		{
-			LoadBSPMap("de_dust.bsp");
+			if (args.Length > 0) {
+				foreach (string map in args) {	
+					LoadBSPMap(map);	
+				}
+			} else {
+				LoadBSPMap("de_dust.bsp");
+			}
 		}
 		
 		public static void LoadBSPMap(string file)
