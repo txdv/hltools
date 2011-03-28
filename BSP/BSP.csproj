@@ -8,7 +8,7 @@
     <ProjectGuid>{F275195F-D129-4681-8320-6359DEBB638D}</ProjectGuid>
     <OutputType>Library</OutputType>
     <RootNamespace>BSP</RootNamespace>
-    <AssemblyName>BSP</AssemblyName>
+    <AssemblyName>HLTools.BSP</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
