@@ -216,7 +216,16 @@ namespace HLTools.BSP
 			this.offset4 = offset4;
 		}
 		
-		public string Name { get { return name.TrimEnd(new char[] { '\0' }); } }
+		// TODO: evaluate bsp files on how correctly they save stuff
+		public string Name {
+			get {
+				int index = name.IndexOf('\0');
+				if (index >= 0) {
+					return name.Substring(0, index);
+				}
+				return name;
+			}
+		}
 		public string name;
 		
 		public int width;

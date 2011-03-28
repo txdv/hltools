@@ -48,6 +48,16 @@ namespace HLTools.WAD
 		public byte compressionType;
 		public byte padding;
 		public byte padding2;
+		// TODO: evaluate wad files on how correctly they save stuff
+		public string Filename {
+			get { 
+				int index = filename.IndexOf('\0');
+				if (index >= 0) {
+					return filename.Substring(0, index);
+				}
+				return filename;
+			} 
+		}
 		public string filename;
 	}
 	
