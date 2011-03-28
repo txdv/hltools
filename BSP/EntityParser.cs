@@ -17,19 +17,19 @@ namespace HLTools.BSP
 			position = 0;
 		}
 		
-		public bool IsWhiteSpace(char c)
+		private bool IsWhiteSpace(char c)
 		{
 			return ((c == ' ') || (c == '\t') || (c == '\r') || (c == '\n'));
 		}
 		
-		public void ReadWhiteSpaces()
+		private void ReadWhiteSpaces()
 		{
 			while (IsWhiteSpace(entities[position])) {
 				position++;	
 			}
 		}
 		
-		public void Expect(char c)
+		private void Expect(char c)
 		{
 			if (position >= length) {
 				throw new Exception(string.Format("Expected {0} but reached end", c));
@@ -40,8 +40,7 @@ namespace HLTools.BSP
 			}
 		}
 		
-		
-		public void ReadUntil(char c)
+		private void ReadUntil(char c)
 		{
 			while (entities[position] != c) {
 				if (position >= length) {
@@ -52,7 +51,7 @@ namespace HLTools.BSP
 			position++;
 		}
 		
-		public string ReadValue()
+		private string ReadValue()
 		{
 			ReadWhiteSpaces();
 			Expect('\"');
