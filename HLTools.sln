@@ -9,12 +9,20 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WAD", "WAD\WAD.csproj", "{8
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WAD.Test", "WAD.Test\WAD.Test.csproj", "{C9B81921-279D-4B33-9E98-331DDB242C09}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Verifier", "Verifier\Verifier.csproj", "{E44BFC6A-F0EB-4A3A-AAD8-0452A0B02DC1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Verifier.Test", "Verifier.Test\Verifier.Test.csproj", "{1619A178-CF84-4BC7-9EBE-49E777E40DAA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{1619A178-CF84-4BC7-9EBE-49E777E40DAA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1619A178-CF84-4BC7-9EBE-49E777E40DAA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1619A178-CF84-4BC7-9EBE-49E777E40DAA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1619A178-CF84-4BC7-9EBE-49E777E40DAA}.Release|Any CPU.Build.0 = Release|Any CPU
 		{5E0122C5-F4BC-490D-B5DB-6431AC4844F5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{5E0122C5-F4BC-490D-B5DB-6431AC4844F5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5E0122C5-F4BC-490D-B5DB-6431AC4844F5}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -27,6 +35,10 @@ Global
 		{C9B81921-279D-4B33-9E98-331DDB242C09}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C9B81921-279D-4B33-9E98-331DDB242C09}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C9B81921-279D-4B33-9E98-331DDB242C09}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E44BFC6A-F0EB-4A3A-AAD8-0452A0B02DC1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E44BFC6A-F0EB-4A3A-AAD8-0452A0B02DC1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E44BFC6A-F0EB-4A3A-AAD8-0452A0B02DC1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E44BFC6A-F0EB-4A3A-AAD8-0452A0B02DC1}.Release|Any CPU.Build.0 = Release|Any CPU
 		{F275195F-D129-4681-8320-6359DEBB638D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{F275195F-D129-4681-8320-6359DEBB638D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F275195F-D129-4681-8320-6359DEBB638D}.Release|Any CPU.ActiveCfg = Release|Any CPU
