@@ -216,6 +216,7 @@ namespace HLTools.BSP
 			this.offset4 = offset4;
 		}
 		
+		public string Name { get { return name.TrimEnd(new char[] { '\0' }); } }
 		public string name;
 		
 		public int width;
