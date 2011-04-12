@@ -1,17 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 10.00
 # Visual Studio 2008
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BSP", "BSP\BSP.csproj", "{F275195F-D129-4681-8320-6359DEBB638D}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BSP.Test", "BSP.Test\BSP.Test.csproj", "{5E0122C5-F4BC-490D-B5DB-6431AC4844F5}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WAD", "WAD\WAD.csproj", "{81915E1F-B781-4759-9DB5-232A61F0F8B6}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WAD.Test", "WAD.Test\WAD.Test.csproj", "{C9B81921-279D-4B33-9E98-331DDB242C09}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Verifier", "Verifier\Verifier.csproj", "{E44BFC6A-F0EB-4A3A-AAD8-0452A0B02DC1}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Verifier.Test", "Verifier.Test\Verifier.Test.csproj", "{1619A178-CF84-4BC7-9EBE-49E777E40DAA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HLTools", "HLTools\HLTools.csproj", "{E5D928F5-B095-48F2-A5D2-65D228CE320E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,24 +23,34 @@ Global
 		{5E0122C5-F4BC-490D-B5DB-6431AC4844F5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5E0122C5-F4BC-490D-B5DB-6431AC4844F5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5E0122C5-F4BC-490D-B5DB-6431AC4844F5}.Release|Any CPU.Build.0 = Release|Any CPU
-		{81915E1F-B781-4759-9DB5-232A61F0F8B6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{81915E1F-B781-4759-9DB5-232A61F0F8B6}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{81915E1F-B781-4759-9DB5-232A61F0F8B6}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{81915E1F-B781-4759-9DB5-232A61F0F8B6}.Release|Any CPU.Build.0 = Release|Any CPU
 		{C9B81921-279D-4B33-9E98-331DDB242C09}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{C9B81921-279D-4B33-9E98-331DDB242C09}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C9B81921-279D-4B33-9E98-331DDB242C09}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C9B81921-279D-4B33-9E98-331DDB242C09}.Release|Any CPU.Build.0 = Release|Any CPU
-		{E44BFC6A-F0EB-4A3A-AAD8-0452A0B02DC1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E44BFC6A-F0EB-4A3A-AAD8-0452A0B02DC1}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E44BFC6A-F0EB-4A3A-AAD8-0452A0B02DC1}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E44BFC6A-F0EB-4A3A-AAD8-0452A0B02DC1}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F275195F-D129-4681-8320-6359DEBB638D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F275195F-D129-4681-8320-6359DEBB638D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F275195F-D129-4681-8320-6359DEBB638D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F275195F-D129-4681-8320-6359DEBB638D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E5D928F5-B095-48F2-A5D2-65D228CE320E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E5D928F5-B095-48F2-A5D2-65D228CE320E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E5D928F5-B095-48F2-A5D2-65D228CE320E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E5D928F5-B095-48F2-A5D2-65D228CE320E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
 		StartupItem = WAD.Test\WAD.Test.csproj
+		Policies = $0
+		$0.TextStylePolicy = $1
+		$1.FileWidth = 120
+		$1.TabWidth = 4
+		$1.RemoveTrailingWhitespace = True
+		$1.inheritsSet = Mono
+		$1.inheritsScope = text/plain
+		$1.scope = text/x-csharp
+		$0.CSharpFormattingPolicy = $2
+		$2.inheritsSet = Mono
+		$2.inheritsScope = text/x-csharp
+		$2.scope = text/x-csharp
+		$0.TextStylePolicy = $3
+		$3.FileWidth = 120
+		$3.TabWidth = 4
+		$3.inheritsSet = Mono
+		$3.inheritsScope = text/plain
+		$3.scope = text/plain
 	EndGlobalSection
 EndGlobal

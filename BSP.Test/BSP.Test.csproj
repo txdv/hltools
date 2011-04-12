@@ -38,9 +38,9 @@
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
-    <ProjectReference Include="..\BSP\BSP.csproj">
-      <Project>{F275195F-D129-4681-8320-6359DEBB638D}</Project>
-      <Name>BSP</Name>
+    <ProjectReference Include="..\HLTools\HLTools.csproj">
+      <Project>{E5D928F5-B095-48F2-A5D2-65D228CE320E}</Project>
+      <Name>HLTools</Name>
     </ProjectReference>
   </ItemGroup>
 </Project>

@@ -37,9 +37,9 @@
     <Compile Include="AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\WAD\WAD.csproj">
-      <Project>{81915E1F-B781-4759-9DB5-232A61F0F8B6}</Project>
-      <Name>WAD</Name>
+    <ProjectReference Include="..\HLTools\HLTools.csproj">
+      <Project>{E5D928F5-B095-48F2-A5D2-65D228CE320E}</Project>
+      <Name>HLTools</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
