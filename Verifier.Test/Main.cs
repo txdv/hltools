@@ -13,22 +13,37 @@ namespace HLTools.Test
 			
 			int badpoints = 0;
 			
-			v.MalformedWadFile += delegate(string wadfile) {
-				Console.WriteLine("  The referenced wad file is malformed: {0}", wadfile);
-				badpoints += 1;
+			v.MalformedWadFiles += delegate(string[] wadfiles) {
+				if (wadfiles.Length > 0) {
+					Console.WriteLine("The referenced wad file are malformed:");
+				}
+				foreach (string wadfile in wadfiles) {
+					Console.WriteLine("  {0}", wadfile);
+				}
+				badpoints += wadfiles.Length;
 			};
 			
-			v.MisnamedModDir += delegate(string wadfile) {
-				Console.WriteLine("  Mod dir does not exist: {0}", wadfile);
-				badpoints += 2;
+			v.MisnamedModDirs += delegate(string[] wadfiles) {
+				if (wadfiles.Length > 0) {
+					Console.WriteLine("Mod dirs do not exist:");
+				}
+				foreach (string wadfile in wadfiles) {
+					Console.WriteLine("  {0}", wadfile);
+				}
+				badpoints += wadfiles.Length * 2;
 			};
 			
 			List<string> missingWads = new List<string>();
 			
-			v.FileNotExistent += delegate(string wadfile) {
-				Console.WriteLine("  File does not exist: {0}", wadfile);
-				missingWads.Add(wadfile);
-				badpoints += 4;
+			v.NotExistingFiles += delegate(string[] wadfiles) {
+				missingWads.AddRange(wadfiles);
+				if (wadfiles.Length > 0) {
+					Console.WriteLine("Files do not exist:");
+				}
+				foreach (string wadfile in wadfiles) {
+					Console.WriteLine ("  {0}", wadfile);
+				}
+				badpoints += wadfiles.Length * 4;
 			};
 			
 			List<string> missingFiles = new List<string>();

@@ -166,12 +166,11 @@ namespace HLTools
 			return list.ToArray();
 		}
 		
-		public delegate void MalformedWadFileDelegate(string wadfile);
 		public delegate void FileArrayDelegate(string[] UsedTextures);
 		
-		public event MalformedWadFileDelegate MalformedWadFile;
-		public event MalformedWadFileDelegate MisnamedModDir;
-		public event MalformedWadFileDelegate FileNotExistent;
+		public event FileArrayDelegate MalformedWadFiles;
+		public event FileArrayDelegate MisnamedModDirs;
+		public event FileArrayDelegate NotExistingFiles;
 		public event FileArrayDelegate MissingTextures;
 		
 		public event FileArrayDelegate UsedSprites;
@@ -214,12 +213,16 @@ namespace HLTools
 			
 			var ent = ep.ReadEntities();
 			
+			List<ValveFile> existingWads = new List<ValveFile>();
+			List<string> malformedWadFiles = new List<string>();
+			List<string> misnamedModDirs = new List<string>();
+			List<string> notExistingFiles = new List<string>();
+
 			if (ent.ContainsKey("worldspawn")) {
 				string skyname = ent["worldspawn"][0]["skyname"];
 				string wadList = ent["worldspawn"][0]["wad"];
 				var list = Seperate(wadList);
 				
-				List<ValveFile> existingWads = new List<ValveFile>();
 				foreach (string fullReferencedWadFile in list) {
 					
 					string referencedRelevantWadFile = fullReferencedWadFile.GetRelevantPath();
@@ -228,26 +231,30 @@ namespace HLTools
 					ValveFile existingFile = GetWadFile(wadfiles, referencedFile);
 					
 					if (referencedRelevantWadFile != fullReferencedWadFile) {
-						if (MalformedWadFile != null) {
-							MalformedWadFile(fullReferencedWadFile);
-						}
+						malformedWadFiles.Add(fullReferencedWadFile);
 					}
 					
 					if (existingFile != null) {
 						if (existingFile.Compare(referencedFile) == ValveFileDifference.EqualFile) {
-							if (MisnamedModDir != null) {
-								MisnamedModDir(fullReferencedWadFile);
-							}
+							misnamedModDirs.Add(fullReferencedWadFile);
 						}
 						
 						existingWads.Add(existingFile);
 					} else {
-						if (FileNotExistent != null) {
-							FileNotExistent(fullReferencedWadFile);
-						}
+						notExistingFiles.Add(fullReferencedWadFile);
 					}
 				}
-				
+
+				if (MalformedWadFiles != null) {
+					MalformedWadFiles(malformedWadFiles.ToArray());
+				}
+				if (MisnamedModDirs != null) {
+					MisnamedModDirs(misnamedModDirs.ToArray());
+				}
+				if (notExistingFiles != null) {
+					NotExistingFiles(notExistingFiles.ToArray());
+				}
+
 				#region Textures
 				
 				List<string> existingFilenames = new List<string>();
