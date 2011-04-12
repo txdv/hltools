@@ -9,7 +9,7 @@ namespace HLTools.Test
 	{
 		public static void Main (string[] args)
 		{
-			Verifier v = new Verifier(args[0], args[1]);
+			VerifierEvents v = new VerifierEvents(new Verifier(args[0], args[1]));
 			
 			int badpoints = 0;
 			
@@ -84,14 +84,14 @@ namespace HLTools.Test
 			}
 			
 			if (args.Length > 2) {
-				v.VerifyMap(args[2]);
-				
+				v.DispatchEvents(args[2]);
+				Console.WriteLine("Bad points: {0}", badpoints);
 			} else {
-				foreach (var file in Directory.GetFiles(v.ModMapsDirectory, "*.bsp")) {
+				foreach (var file in Directory.GetFiles(v.Verifier.ModMapsDirectory, "*.bsp")) {
 					FileInfo fi = new FileInfo(file);
 					Console.WriteLine(fi.Name);
-					v.VerifyMap(fi.Name);
-					Console.WriteLine(badpoints);
+					v.DispatchEvents(fi.Name);
+					Console.WriteLine("Bad points: {0}", badpoints);
 					badpoints = 0;
 				}
 			}

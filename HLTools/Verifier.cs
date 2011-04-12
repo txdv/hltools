@@ -77,7 +77,102 @@ namespace HLTools
 			}
 		}
 	}
-	
+
+	public class VerifierResult
+	{
+		public VerifierResult()
+		{
+		}
+
+		public string[] MalformedWadFiles { get; set; }
+		public string[] MisnamedModDirs   { get; set; }
+		public string[] NotExistingFiles  { get; set; }
+		public string[] MissingTextures   { get; set; }
+
+		public string[] UsedSprites       { get; set; }
+		public string[] MissingSprites    { get; set; }
+
+		public string[] UsedSounds        { get; set; }
+		public string[] MissingSounds     { get; set; }
+
+		public string[] UsedModels        { get; set; }
+		public string[] MissingModels     { get; set; }
+	}
+
+	public class VerifierEvents
+	{
+		public VerifierEvents(Verifier verifier)
+		{
+			Verifier = verifier;
+		}
+
+		public Verifier Verifier { get; protected set; }
+
+		public delegate void FileArrayDelegate(string[] UsedTextures);
+
+		public event FileArrayDelegate MalformedWadFiles;
+		public event FileArrayDelegate MisnamedModDirs;
+		public event FileArrayDelegate NotExistingFiles;
+		public event FileArrayDelegate MissingTextures;
+
+		public event FileArrayDelegate UsedSprites;
+		public event FileArrayDelegate MissingSprites;
+
+		public event FileArrayDelegate UsedSounds;
+		public event FileArrayDelegate MissingSounds;
+
+		public event FileArrayDelegate UsedModels;
+		public event FileArrayDelegate MissingModels;
+
+		public void DispatchEvents(VerifierResult res)
+		{
+			if (MalformedWadFiles != null) {
+				MalformedWadFiles(res.MalformedWadFiles);
+			}
+
+			if (MisnamedModDirs != null) {
+				MisnamedModDirs(res.MisnamedModDirs);
+			}
+
+			if (NotExistingFiles != null) {
+				NotExistingFiles(res.NotExistingFiles);
+			}
+
+			if (MissingTextures != null) {
+				MissingTextures(res.MissingTextures);
+			}
+
+			if (UsedSprites != null) {
+				UsedSprites(res.UsedSprites);
+			}
+
+			if (MissingSprites != null) {
+				MissingSprites(res.MissingSprites);
+			}
+
+			if (UsedSounds != null) {
+				UsedSounds(res.UsedSounds);
+			}
+
+			if (MissingSounds != null) {
+				MissingSounds(res.MissingSounds);
+			}
+
+			if (UsedModels != null) {
+				UsedModels(res.UsedModels);
+			}
+
+			if (MissingModels != null) {
+				MissingModels(res.MissingModels);
+			}
+		}
+
+		public void DispatchEvents(string map)
+		{
+			DispatchEvents(Verifier.VerifyMap(map));
+		}
+	}
+
 	public class Verifier
 	{
 		public readonly string ValveDir = "valve";
@@ -166,24 +261,10 @@ namespace HLTools
 			return list.ToArray();
 		}
 		
-		public delegate void FileArrayDelegate(string[] UsedTextures);
-		
-		public event FileArrayDelegate MalformedWadFiles;
-		public event FileArrayDelegate MisnamedModDirs;
-		public event FileArrayDelegate NotExistingFiles;
-		public event FileArrayDelegate MissingTextures;
-		
-		public event FileArrayDelegate UsedSprites;
-		public event FileArrayDelegate MissingSprites;
-		
-		public event FileArrayDelegate UsedSounds;
-		public event FileArrayDelegate MissingSounds;
-		
-		public event FileArrayDelegate UsedModels;
-		public event FileArrayDelegate MissingModels;
-		
-		public void VerifyMap(string map)
+		public VerifierResult VerifyMap(string map)
 		{
+			VerifierResult res = new VerifierResult();
+
 			ValveFile[] wadfiles = GetWadFiles();
 			
 			var fullmap = Path.Combine(ModMapsDirectory, map);
@@ -245,15 +326,9 @@ namespace HLTools
 					}
 				}
 
-				if (MalformedWadFiles != null) {
-					MalformedWadFiles(malformedWadFiles.ToArray());
-				}
-				if (MisnamedModDirs != null) {
-					MisnamedModDirs(misnamedModDirs.ToArray());
-				}
-				if (notExistingFiles != null) {
-					NotExistingFiles(notExistingFiles.ToArray());
-				}
+				res.MalformedWadFiles = malformedWadFiles.ToArray();
+				res.MisnamedModDirs   =   misnamedModDirs.ToArray();
+				res.NotExistingFiles  =  notExistingFiles.ToArray();
 
 				#region Textures
 				
@@ -273,11 +348,9 @@ namespace HLTools
 						missingTextures.Add(item);
 					}
 				}
-				
-				if (MissingTextures != null) {
-					MissingTextures(missingTextures.ToArray());
-				}
-				
+
+				res.MissingTextures = missingTextures.ToArray();
+
 				#endregion
 				
 				
@@ -292,9 +365,9 @@ namespace HLTools
 						}
 					}
 				}
-				if (UsedSprites != null) {
-					UsedSprites(sprites.ToArray());
-				}
+
+				res.UsedSprites = sprites.ToArray();
+
 				List<string> missingSprites = new List<string>();
 				foreach (string sprite in sprites) {
 					ValveFile file = GetFile(sprite);
@@ -302,10 +375,8 @@ namespace HLTools
 						missingSprites.Add(sprite);
 					}
 				}
-				if (MissingSprites != null) {
-					MissingSprites(missingSprites.ToArray());	
-				}
-				
+				res.MissingSprites = missingSprites.ToArray();
+
 				#endregion
 				
 				#region Sounds
@@ -321,11 +392,9 @@ namespace HLTools
 						}
 					}
 				}
-				
-				if (UsedSounds != null) {
-					UsedSounds(sounds.ToArray());
-				}
-				
+
+				res.UsedSounds = sounds.ToArray();
+
 				List<string> missingSounds = new List<string>();
 				
 				foreach (string sound in sounds) {
@@ -334,11 +403,9 @@ namespace HLTools
 						missingSounds.Add(sound);
 					}
 				}
-				
-				if (MissingSounds != null) {
-					MissingSounds(missingSounds.ToArray());
-				}
-				
+
+				res.MissingSounds = missingSounds.ToArray();
+
 				#endregion
 				
 				#region Models
@@ -357,11 +424,9 @@ namespace HLTools
 						}
 					}
 				}
-				
-				if (UsedModels != null) {
-					UsedModels(models.ToArray());
-				}
-				
+
+				res.UsedModels = models.ToArray();
+
 				List<string> missingModels = new List<string>();
 				
 				foreach (var model in models) {
@@ -370,13 +435,13 @@ namespace HLTools
 						missingModels.Add(model);
 					}
 				}
-				
-				if (MissingModels != null) {
-					MissingModels(missingModels.ToArray());
-				}
-				
+
+				res.MissingModels = missingModels.ToArray();
+
 				#endregion
+
 			}
+			return res;
 		}
 	}
 }
