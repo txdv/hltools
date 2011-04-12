@@ -236,18 +236,44 @@ namespace HLTools
 					
 					if (existingFile != null) {
 						if (existingFile.Compare(referencedFile) == ValveFileDifference.EqualFile) {
-							if (MisnamedModDir != null) {	
-								MisnamedModDir(fullReferencedWadFile);	
+							if (MisnamedModDir != null) {
+								MisnamedModDir(fullReferencedWadFile);
 							}
 						}
 						
 						existingWads.Add(existingFile);
 					} else {
-						if (FileNotExistent != null) {	
+						if (FileNotExistent != null) {
 							FileNotExistent(fullReferencedWadFile);
 						}
 					}
 				}
+				
+				#region Textures
+				
+				List<string> existingFilenames = new List<string>();
+				foreach (var wadFile in existingWads) {
+					WADParser wp = new WADParser(File.OpenRead(wadFile.ToString(BaseDirectory)));
+					wp.OnLoadFile += delegate(WADFile file) {
+						existingFilenames.Add(file.Filename.ToLower());
+					};
+					wp.LoadFiles();
+				}
+				
+				List<string> missingTextures = new List<string>();
+					
+				foreach (var item in textureList) {
+					if (!existingFilenames.Contains(item.ToLower())) {
+						missingTextures.Add(item);
+					}
+				}
+				
+				if (MissingTextures != null) {
+					MissingTextures(missingTextures.ToArray());
+				}
+				
+				#endregion
+				
 				
 				#region Sprites
 				
@@ -305,31 +331,6 @@ namespace HLTools
 				
 				if (MissingSounds != null) {
 					MissingSounds(missingSounds.ToArray());
-				}
-				
-				#endregion
-				
-				#region Textures
-				
-				List<string> existingFilenames = new List<string>();
-				foreach (var wadFile in existingWads) {
-					WADParser wp = new WADParser(File.OpenRead(wadFile.ToString(BaseDirectory)));
-					wp.OnLoadFile += delegate(WADFile file) {
-						existingFilenames.Add(file.Filename.ToLower());
-					};
-					wp.LoadFiles();
-				}
-				
-				List<string> missingTextures = new List<string>();
-					
-				foreach (var item in textureList) {
-					if (!existingFilenames.Contains(item.ToLower())) {
-						missingTextures.Add(item);
-					}
-				}
-				
-				if (MissingTextures != null) {
-					MissingTextures(missingTextures.ToArray());
 				}
 				
 				#endregion
