@@ -167,13 +167,12 @@ namespace HLTools
 		}
 		
 		public delegate void MalformedWadFileDelegate(string wadfile);
-		public delegate void MissingTexturesDelegate(string[] missingTextures);
 		public delegate void FileArrayDelegate(string[] UsedTextures);
 		
 		public event MalformedWadFileDelegate MalformedWadFile;
 		public event MalformedWadFileDelegate MisnamedModDir;
 		public event MalformedWadFileDelegate FileNotExistent;
-		public event MissingTexturesDelegate MissingTextures;
+		public event FileArrayDelegate MissingTextures;
 		
 		public event FileArrayDelegate UsedSprites;
 		public event FileArrayDelegate MissingSprites;
