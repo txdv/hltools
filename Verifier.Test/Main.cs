@@ -52,11 +52,13 @@ namespace HLTools.Test
 				if (missingTextures.Length == 0) {
 					return;
 				}
-				
+
+				Console.WriteLine("Missing textures");
 				foreach (string missingTexture in missingTextures) {
 					Console.WriteLine("  {0}", missingTexture);
 				}
-				
+
+				Console.WriteLine("Could be in these wad files:");
 				foreach (string missingWad in missingWads) {
 					Console.WriteLine("  {0}", missingWad);
 				}
