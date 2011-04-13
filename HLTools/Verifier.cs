@@ -97,6 +97,21 @@ namespace HLTools
 
 		public string[] UsedModels        { get; set; }
 		public string[] MissingModels     { get; set; }
+
+		public bool ServerCapable {
+			get {
+				return MissingTextures.Length == 0;
+			}
+		}
+
+		public bool ClientCapable {
+			get {
+				return (ServerCapable && (MissingSprites.Length == 0) && (MissingSounds.Length == 0) && (MissingModels.Length == 0));
+			}
+		}
+
+		public string[] UsedFileList    { get; set; }
+		public string[] MissingFileList { get; set; }
 	}
 
 	public class VerifierEvents
@@ -444,6 +459,21 @@ namespace HLTools
 				#endregion
 
 			}
+
+			List<string> usedFileList = new List<string>();
+			usedFileList.AddRange(res.UsedSprites);
+			usedFileList.AddRange(res.UsedSounds);
+			usedFileList.AddRange(res.UsedModels);
+			usedFileList.Sort();
+			res.UsedFileList = usedFileList.ToArray();
+
+			List<string> missingFileList = new List<string>();
+			missingFileList.AddRange(res.MissingSprites);
+			missingFileList.AddRange(res.MissingSounds);
+			missingFileList.AddRange(res.MissingModels);
+			missingFileList.Sort();
+			res.MissingFileList = missingFileList.ToArray();
+
 			return res;
 		}
 	}
