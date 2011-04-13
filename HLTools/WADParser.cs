@@ -159,6 +159,11 @@ namespace HLTools.WAD
 			br.BaseStream.Seek(file.offset, SeekOrigin.Begin);
 			return br.ReadBytes((int)file.compressedFileSize);
 		}
+
+		public void Close()
+		{
+			br.Close();
+		}
 		
 		public uint Offset { get; set; }
 		public uint FileCount { get; set; }

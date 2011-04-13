@@ -706,6 +706,11 @@ namespace HLTools.BSP
 		public DirectoryEntry Models { get; protected set; }
 		
 		#endregion
+
+		public void Close()
+		{
+			br.Close();
+		}
 	}
 }
 

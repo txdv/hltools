@@ -289,7 +289,9 @@ namespace HLTools
 			bp.LoadMipTextures();
 			
 			string entities = bp.ReadEntities();
-			
+
+			bp.Close();
+
 			EntityParser ep = new EntityParser(entities);
 			
 			var ent = ep.ReadEntities();
@@ -339,6 +341,7 @@ namespace HLTools
 						existingFilenames.Add(file.Filename.ToLower());
 					};
 					wp.LoadFiles();
+					wp.Close();
 				}
 				
 				List<string> missingTextures = new List<string>();
