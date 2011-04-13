@@ -7,92 +7,73 @@ namespace HLTools.Test
 {
 	class MainClass
 	{
-		public static void Main (string[] args)
+		public static int CalculateBadPoints(VerifierResult res)
 		{
-			VerifierEvents v = new VerifierEvents(new Verifier(args[0], args[1]));
-			
-			int badpoints = 0;
-			
-			v.MalformedWadFiles += delegate(string[] wadfiles) {
-				if (wadfiles.Length > 0) {
-					Console.WriteLine("The referenced wad file are malformed:");
-				}
-				foreach (string wadfile in wadfiles) {
+			return res.MalformedWadFiles.Length +
+				   res.MisnamedModDirs.Length * 2 +
+				   res.NotExistingFiles.Length * 4;
+		}
+
+		public static void Handle(Verifier v, string file)
+		{
+			var res = v.VerifyMap(file);
+
+			Console.WriteLine("{0}:", file);
+
+			if (res.MalformedWadFiles.Length > 0) {
+				Console.WriteLine("The referenced wad files are malformed:");
+				foreach (string wadfile in res.MalformedWadFiles) {
 					Console.WriteLine("  {0}", wadfile);
 				}
-				badpoints += wadfiles.Length;
-			};
-			
-			v.MisnamedModDirs += delegate(string[] wadfiles) {
-				if (wadfiles.Length > 0) {
-					Console.WriteLine("Mod dirs do not exist:");
-				}
-				foreach (string wadfile in wadfiles) {
+			}
+
+			if (res.MisnamedModDirs.Length > 0) {
+				Console.WriteLine("The referenced mod directories do not exist (misnamed):");
+				foreach (string wadfile in res.MisnamedModDirs) {
 					Console.WriteLine("  {0}", wadfile);
 				}
-				badpoints += wadfiles.Length * 2;
-			};
-			
-			List<string> missingWads = new List<string>();
-			
-			v.NotExistingFiles += delegate(string[] wadfiles) {
-				missingWads.AddRange(wadfiles);
-				if (wadfiles.Length > 0) {
-					Console.WriteLine("Files do not exist:");
-				}
-				foreach (string wadfile in wadfiles) {
-					Console.WriteLine ("  {0}", wadfile);
-				}
-				badpoints += wadfiles.Length * 4;
-			};
-			
-			List<string> missingFiles = new List<string>();
-			
-			v.MissingTextures += delegate(string[] missingTextures) {
-				if (missingTextures.Length == 0) {
-					return;
-				}
+			}
 
-				Console.WriteLine("Missing textures");
-				foreach (string missingTexture in missingTextures) {
-					Console.WriteLine("  {0}", missingTexture);
+			if (res.NotExistingFiles.Length > 0) {
+				Console.WriteLine("The referenced wad files do not exist:");
+				foreach (string wadfile in res.NotExistingFiles) {
+					Console.WriteLine("  {0}", wadfile);
 				}
+			}
 
+			if (res.MissingTextures.Length > 0) {
+				Console.WriteLine("Missing textures: ");
+				foreach (string texture in res.MissingTextures) {
+					Console.WriteLine("  {0}", texture);
+				}
 				Console.WriteLine("Could be in these wad files:");
-				foreach (string missingWad in missingWads) {
+				foreach (string missingWad in res.NotExistingFiles) {
 					Console.WriteLine("  {0}", missingWad);
 				}
-			};
-			
-			v.MissingSprites += delegate(string[] missingSprites) {
-				missingFiles.AddRange(missingSprites);
-			};
-			
-			v.MissingSounds += delegate(string[] missingSounds) {
-				missingFiles.AddRange(missingSounds);
-			};
-			
-			v.MissingModels += delegate(string[] missingModels) {
-				missingFiles.AddRange(missingModels);
-			};
-			
-			if (missingFiles.Count > 0) {
-				foreach (string file in missingFiles) {
-					Console.WriteLine ("  {0}", file);	
-				}
-				System.Environment.Exit(0);
 			}
-			
+
+			if (res.MissingFileList.Length > 0) {
+				Console.WriteLine("These file are missing in the installation:");
+				foreach (string missingFile in res.MissingFileList) {
+					Console.WriteLine("  {0}", missingFile);
+				}
+			}
+
+			Console.WriteLine("  Bad points: {0}", CalculateBadPoints(res));
+
+			Console.WriteLine();
+		}
+
+		public static void Main(string[] args)
+		{
+			Verifier v = new Verifier(args[0], args[1]);
+
 			if (args.Length > 2) {
-				v.DispatchEvents(args[2]);
-				Console.WriteLine("Bad points: {0}", badpoints);
+				Handle(v, args[2]);
 			} else {
-				foreach (var file in Directory.GetFiles(v.Verifier.ModMapsDirectory, "*.bsp")) {
+				foreach (var file in Directory.GetFiles(v.ModMapsDirectory, "*.bsp")) {
 					FileInfo fi = new FileInfo(file);
-					Console.WriteLine(fi.Name);
-					v.DispatchEvents(fi.Name);
-					Console.WriteLine("Bad points: {0}", badpoints);
-					badpoints = 0;
+					Handle(v, fi.Name);
 				}
 			}
 		}
