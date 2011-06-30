@@ -56,7 +56,7 @@ namespace HLTools
 		
 		public string ToString(string baseDirectory)
 		{
-			return baseDirectory + ToString();
+			return Path.Combine(baseDirectory, ToString());
 		}
 		
 		public override string ToString()
