@@ -60,7 +60,7 @@ namespace HLTools.WAD
 		}
 		public string filename;
 	}
-	
+
 	public static class BinaryReaderExtensions
 	{
 		#region Big Endian
@@ -71,10 +71,10 @@ namespace HLTools.WAD
 			byte b2 = br.ReadByte();
 			byte b3 = br.ReadByte();
 			byte b4 = br.ReadByte();
-			
+
 			return ((b4 << 24) | (b3 << 16) | (b2 << 8) | b1);
 		}
-		
+
 		public static uint BReadUInt32(this BinaryReader br)
 		{
 			byte b1 = br.ReadByte();
@@ -84,23 +84,23 @@ namespace HLTools.WAD
 			
 			return (uint)((b4 << 24) | (b3 << 16) | (b2 << 8) | b1);
 		}
-		
+
 		public static short BReadInt16(this BinaryReader br)
 		{
 			byte b1 = br.ReadByte();
 			byte b2 = br.ReadByte();
 			return (short)((b2 << 8) | b1);
 		}
-		
+
 		public static ushort BReadUInt16(this BinaryReader br)
 		{
 			byte b1 = br.ReadByte();
 			byte b2 = br.ReadByte();
 			return (ushort)((b2 << 8) | b1);
 		}
-		
+
 		#endregion
-		
+
 		public static WADFile ReadWADFile(this BinaryReader br)
 		{
 			return new WADFile(br.BReadUInt32(), br.BReadUInt32(), br.BReadUInt32(), br.ReadByte(),
@@ -109,27 +109,27 @@ namespace HLTools.WAD
 			                   );
 		}
 	}
-	
+
 	public class WADParser
 	{
 		public delegate void LoadFileDelegate(WADFile file);
 		public event LoadFileDelegate OnLoadFile;
-		
+
 		public static readonly string MagicString = "WAD3";
 		public static readonly int    MagicInt    = 1463895091;
-		
+
 		private BinaryReader br;
-		
+
 		public WADParser(Stream stream)
 		{
 			br = new BinaryReader(stream);
-			
+
 			// TODO: through exception on fake magic
 			bool magic = CheckMagic(br.ReadBytes(4));
 			FileCount = br.BReadUInt32();
 			Offset = br.BReadUInt32();
 		}
-		
+
 		public void LoadFiles()
 		{
 			if (OnLoadFile != null) {
@@ -139,12 +139,12 @@ namespace HLTools.WAD
 				}
 			}
 		}
-		
+
 		public static bool CheckMagic(byte[] bytes)
 		{
 			return CheckMagic(bytes, 0);
 		}
-		
+
 		public static bool CheckMagic(byte[] bytes, int startindex)
 		{
 			if (bytes.Length < startindex + 4) {
@@ -153,7 +153,7 @@ namespace HLTools.WAD
 			string m = Encoding.ASCII.GetString(bytes, startindex, 4);
 			return (m == MagicString);
 		}
-		
+
 		public byte[] LoadFile(WADFile file)
 		{
 			br.BaseStream.Seek(file.offset, SeekOrigin.Begin);
@@ -164,7 +164,7 @@ namespace HLTools.WAD
 		{
 			br.Close();
 		}
-		
+
 		public uint Offset { get; set; }
 		public uint FileCount { get; set; }
 	}

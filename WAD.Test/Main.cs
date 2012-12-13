@@ -26,12 +26,12 @@ namespace HLTools.WAD.Test
 			WADParser wadp = new WADParser(fs);
 			Console.WriteLine("Files in directory: {0}", wadp.FileCount);
 
-			wadp.OnLoadFile += delegate(WADFile file) { };
+			wadp.OnLoadFile += (file) => { };
 			Console.WriteLine("Loading file information");
 			wadp.LoadFiles();
 
 			fs.Close();
-			fs.Dispose();			
+			fs.Dispose();
 		}
 	}
 }

@@ -18,7 +18,7 @@ namespace HLTools.BSP.Test
 				// LoadEntities2("de_dust.bsp");
 			}
 		}
-		
+
 		public static void LoadEntities(string file)
 		{
 			FileStream fs = File.OpenRead(file);
@@ -26,7 +26,7 @@ namespace HLTools.BSP.Test
 			if (p.LoadDirectoryTables()) {
 				string entities = p.ReadEntities();
 				EntityParser ep = new EntityParser(entities);
-				
+
 				foreach (var entity in ep.Entities) {
 					Console.Write("{");
 					foreach (var kvp in entity) {
@@ -35,11 +35,11 @@ namespace HLTools.BSP.Test
 					}
 					Console.WriteLine("}");
 				}
-				
+
 				Console.WriteLine ();
 			}
 		}
-		
+
 		public static void LoadEntities2(string file)
 		{
 			FileStream fs = File.OpenRead(file);
@@ -49,7 +49,7 @@ namespace HLTools.BSP.Test
 				Console.WriteLine (entities);
 				EntityParser ep = new EntityParser(entities);
 				var ent = ep.ReadEntities();
-				
+	
 				Console.WriteLine (ent["worldspawn"][0]["wad"]);
 				Console.WriteLine (ent["worldspawn"][0]["skyname"]);
 				if (ent.ContainsKey("ambient_generic")) {
@@ -69,66 +69,65 @@ namespace HLTools.BSP.Test
 			Console.WriteLine ("Loading Directory table");
 			if (p.LoadDirectoryTables())
 			{
-				p.OnLoadEntities += delegate(string entities) { };
+				p.OnLoadEntities += (entities) => { };
 				Console.WriteLine ("Loading Entities");
 				p.LoadEntities();
-				
-				p.OnLoadPlane += delegate(Plane plane) { };
-				Console.WriteLine ("Loading Planes");
+
+				p.OnLoadPlane += (plane) => { };
+				Console.WriteLine("Loading Planes");
 				p.LoadPlanes();
-				
-				p.OnLoadMipTexture += delegate(MipTexture texture) { };
-				if (p.LoadMipTextureOffsets())
-				{
-					Console.WriteLine ("Loading Mip Textures");
+
+				p.OnLoadMipTexture += (texture) => { };
+				if (p.LoadMipTextureOffsets()) {
+					Console.WriteLine("Loading Mip Textures");
 					p.LoadMipTextures();
 				}
-				
-				p.OnLoadVertex += delegate(Vector3f vertex) { };
-				Console.WriteLine ("Loading Vertices");
+
+				p.OnLoadVertex += (vertex) => { };
+				Console.WriteLine("Loading Vertices");
 				p.LoadVertices();
-				
-				p.OnLoadBSPNode += delegate(BSPNode node) { };
-				Console.WriteLine ("Loading BSP nodes");
+
+				p.OnLoadBSPNode += (node) => { };
+				Console.WriteLine("Loading BSP nodes");
 				p.LoadBSPNodes();
-				
-				p.OnLoadFaceTextureInfo += delegate(FaceTextureInfo textureInfo) { };
-				Console.WriteLine ("Loading Surface Texture Info");
+
+				p.OnLoadFaceTextureInfo += (textureInfo) => { };
+				Console.WriteLine("Loading Surface Texture Info");
 				p.LoadFaceTextureInfo();
-				
-				p.OnLoadFace += delegate(Face face) { };
-				Console.WriteLine ("Loading Faces");
+
+				p.OnLoadFace += (face) => { };
+				Console.WriteLine("Loading Faces");
 				p.LoadFaces();
-				
-				p.OnLoadLightMap += delegate(byte lightmap) { };
-				Console.WriteLine ("Loading lightmaps");
+
+				p.OnLoadLightMap += (lightmap) => { };
+				Console.WriteLine("Loading lightmaps");
 				p.LoadLightMaps();
-				
-				p.OnLoadClipNode += delegate(ClipNode node) { };
-				Console.WriteLine ("Loading ClipNode");
+
+				p.OnLoadClipNode += (node) => { };
+				Console.WriteLine("Loading ClipNode");
 				p.LoadClipNodes();
-				
-				p.OnLoadBSPLeaf += delegate(BSPLeaf leaf) { };
-				Console.WriteLine ("Loading BSP leaves");
+
+				p.OnLoadBSPLeaf += (leaf) => { };
+				Console.WriteLine("Loading BSP leaves");
 				p.LoadBSPLeaves();
-				
-				p.OnLoadFaceListElement += delegate(short face_index) { };
-				Console.WriteLine ("Loading Face index list");
+
+				p.OnLoadFaceListElement += (face_index) => { };
+				Console.WriteLine("Loading Face index list");
 				p.LoadFaceList();
-				
-				p.OnLoadEdge += delegate(Edge edge) { };
+
+				p.OnLoadEdge += (edge) => { };
 				Console.WriteLine ("Loading Edges");
 				p.LoadEdges();
-				
-				p.OnLoadEdgeListElement += delegate(short edge) { };
-				Console.WriteLine ("Loading Edge List");
+
+				p.OnLoadEdgeListElement += (edge) => { };
+				Console.WriteLine("Loading Edge List");
 				p.LoadEdgeList();
-				
-				p.OnLoadModel += delegate(Model model) { };
+
+				p.OnLoadModel += (model) => { };
 				Console.WriteLine ("Loading Models");
 				p.LoadModels();
 			}
-			
+
 			fs.Close();
 			fs.Dispose();
 		}

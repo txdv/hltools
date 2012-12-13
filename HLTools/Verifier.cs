@@ -12,7 +12,7 @@ namespace HLTools
 		EqualFile,
 		NotEqual
 	};
-	
+
 	public static class StringExtensions
 	{
 		public static string GetBareFilename(this string filename)
@@ -20,19 +20,19 @@ namespace HLTools
 			var list = filename.Split(new char[] { '/', '\\' });
 			return list[list.Length - 1];
 		}
-		
+
 		public static string GetModDir(this string filename)
 		{
 			var list = filename.Split(new char[] { '/', '\\' });
 			return list[list.Length - 2];
 		}
-		
+
 		public static string GetRelevantPath(this string filename)
 		{
 			return Path.Combine(GetModDir(filename), GetBareFilename(filename));
 		}
 	}
-	
+
 	public class ValveFile
 	{
 		public ValveFile(string moddir, string file)
@@ -41,7 +41,7 @@ namespace HLTools
 			if (file.StartsWith("/")) {
 				file = file.Substring(1);	
 			}
-			
+
 			ModDirectory = moddir;
 			File = file;
 		}
@@ -50,26 +50,26 @@ namespace HLTools
 			: this(fullpath.GetModDir(), fullpath.GetBareFilename())
 		{
 		}
-		
+
 		public string ModDirectory { get; protected set; }
 		public string File { get; protected set; }
-		
+
 		public string ToString(string baseDirectory)
 		{
 			return Path.Combine(baseDirectory, ToString());
 		}
-		
+
 		public override string ToString()
 		{
 			return Path.Combine(ModDirectory, File);
 		}
-		
+
 		public ValveFileDifference Compare(ValveFile file)
 		{
 			if (File == file.File) {
 				if (ModDirectory == file.ModDirectory) { 
 					return ValveFileDifference.Equal;
-				} else { 
+				} else {
 					return ValveFileDifference.EqualFile;
 				}
 			} else {
@@ -195,15 +195,15 @@ namespace HLTools
 		public readonly string SoundDir = "sound";
 		public readonly string[] SkyEndings = new string[] { "bk", "ft", "dn", "up" , "rt", "lf" };
 		public readonly string[] SkyExtensions = new string[] { ".bmp", ".tga" };
-		
+
 		public string ModDir { get; protected set; }
 		public string BaseDirectory { get; protected set; }
 		public string ModDirectory { get; protected set; }
-		
+
 		public string ModMapsDirectory { get; protected set; }
-		
+
 		public string ValveDirectory { get { return Path.Combine(BaseDirectory, ValveDir); } }
-		
+
 		public Verifier(string basedir, string mod)
 		{
 			BaseDirectory = basedir;
@@ -211,21 +211,21 @@ namespace HLTools
 			ModDirectory = Path.Combine(basedir, ModDir);
 			ModMapsDirectory = Path.Combine(ModDirectory, MapDir);
 		}
-		
+
 		public ValveFile[] GetWadFiles()
 		{
 			List<ValveFile> list = new List<ValveFile>();
 			foreach (string file in Directory.GetFiles(ValveDirectory, "*.wad")) {
 				list.Add(new ValveFile(file));
 			}
-			
+
 			foreach (string file in Directory.GetFiles(ModDirectory, "*.wad")) {
 				list.Add(new ValveFile(file));
 			}
-			
+
 			return list.ToArray();
 		}
-		
+
 		public ValveFile GetWadFile(ValveFile[] existingFiles, ValveFile file)
 		{
 			ValveFile potential = null;
@@ -237,33 +237,33 @@ namespace HLTools
 					potential = existingFile;	
 				}
 			}
-			
+
 			return (potential == null ? null : potential);
 		}
-		
+
 		public bool FileExists(ValveFile file)
 		{
 			string path = Path.Combine(BaseDirectory, file.ToString());
 			return File.Exists(path);
 		}
-		
+
 		public ValveFile GetFile(string path)
 		{
 			ValveFile file = null;
-			
+
 			file = new ValveFile(ModDir, path);
 			if (FileExists(file)) {
 				return file;
 			}
-			
+
 			file = new ValveFile(ValveDir, path);
 			if (FileExists(file)) {
 				return file;
 			}
-			
+
 			return null;
 		}
-		
+
 		public string[] Seperate(string wad)
 		{
 			List<string> list = new List<string>();
@@ -275,42 +275,42 @@ namespace HLTools
 			}
 			return list.ToArray();
 		}
-		
+
 		public VerifierResult VerifyMap(string map)
 		{
 			VerifierResult res = new VerifierResult();
 
 			ValveFile[] wadfiles = GetWadFiles();
-			
+
 			var fullmap = Path.Combine(ModMapsDirectory, map);
-			
+
 			if (!File.Exists(fullmap)) {
 				throw new Exception(string.Format("Map does not exist: {0}", fullmap));
 			}
-			
+
 			BSPParser bp = new BSPParser(File.OpenRead(fullmap));
-			
+
 			if (!bp.LoadDirectoryTables()) {
 				throw new Exception("Malformed file");
 			}
 
 			List<string> textureList = new List<string>();
 			bp.LoadMipTextureOffsets();
-			bp.OnLoadMipTexture += delegate(MipTexture texture) {
+			bp.OnLoadMipTexture += (texture) => {
 				if ((texture.offset1 == 0) && (texture.offset2 == 0) && (texture.offset3 == 0) && (texture.offset4 == 0)) {
 					textureList.Add(texture.Name);
 				}
 			};
 			bp.LoadMipTextures();
-			
+
 			string entities = bp.ReadEntities();
 
 			bp.Close();
 
 			EntityParser ep = new EntityParser(entities);
-			
+
 			var ent = ep.ReadEntities();
-			
+
 			List<ValveFile> existingWads = new List<ValveFile>();
 			List<string> malformedWadFiles = new List<string>();
 			List<string> misnamedModDirs = new List<string>();
@@ -320,23 +320,23 @@ namespace HLTools
 				string skyname = ent["worldspawn"][0]["skyname"];
 				string wadList = ent["worldspawn"][0]["wad"];
 				var list = Seperate(wadList);
-				
+
 				foreach (string fullReferencedWadFile in list) {
-					
+
 					string referencedRelevantWadFile = fullReferencedWadFile.GetRelevantPath();
-					
+
 					ValveFile referencedFile = new ValveFile(referencedRelevantWadFile);
 					ValveFile existingFile = GetWadFile(wadfiles, referencedFile);
-					
+
 					if (referencedRelevantWadFile != fullReferencedWadFile) {
 						malformedWadFiles.Add(fullReferencedWadFile);
 					}
-					
+
 					if (existingFile != null) {
 						if (existingFile.Compare(referencedFile) == ValveFileDifference.EqualFile) {
 							misnamedModDirs.Add(fullReferencedWadFile);
 						}
-						
+
 						existingWads.Add(existingFile);
 					} else {
 						notExistingFiles.Add(fullReferencedWadFile);
@@ -348,19 +348,19 @@ namespace HLTools
 				res.NotExistingFiles  =  notExistingFiles.ToArray();
 
 				#region Textures
-				
+	
 				List<string> existingFilenames = new List<string>();
 				foreach (var wadFile in existingWads) {
 					WADParser wp = new WADParser(File.OpenRead(wadFile.ToString(BaseDirectory)));
-					wp.OnLoadFile += delegate(WADFile file) {
+					wp.OnLoadFile += (file) => {
 						existingFilenames.Add(file.Filename.ToLower());
 					};
 					wp.LoadFiles();
 					wp.Close();
 				}
-				
+
 				List<string> missingTextures = new List<string>();
-					
+	
 				foreach (var item in textureList) {
 					if (!existingFilenames.Contains(item.ToLower())) {
 						missingTextures.Add(item);
@@ -370,10 +370,9 @@ namespace HLTools
 				res.MissingTextures = missingTextures.ToArray();
 
 				#endregion
-				
-				
+
 				#region Sprites
-				
+
 				List<string> sprites = new List<string>();
 				if (ent.ContainsKey("env_sprite")) {
 					foreach (var dict in ent["env_sprite"]) {
@@ -396,9 +395,9 @@ namespace HLTools
 				res.MissingSprites = missingSprites.ToArray();
 
 				#endregion
-				
+
 				#region Sounds
-				
+
 				List<string> sounds = new List<string>();
 				if (ent.ContainsKey("ambient_generic")) {
 					foreach (var ambient in ent["ambient_generic"]) {
@@ -414,7 +413,7 @@ namespace HLTools
 				res.UsedSounds = sounds.ToArray();
 
 				List<string> missingSounds = new List<string>();
-				
+
 				foreach (string sound in sounds) {
 					ValveFile file = GetFile(sound);
 					if (file == null) {
@@ -425,9 +424,9 @@ namespace HLTools
 				res.MissingSounds = missingSounds.ToArray();
 
 				#endregion
-				
+
 				#region Models
-				
+
 				List<string> models = new List<string>();
 				foreach (var entityPair in ent) {
 					foreach (var entity in entityPair.Value) {
@@ -446,7 +445,7 @@ namespace HLTools
 				res.UsedModels = models.ToArray();
 
 				List<string> missingModels = new List<string>();
-				
+
 				foreach (var model in models) {
 					ValveFile file = GetFile(model);
 					if (file == null) {
@@ -457,7 +456,6 @@ namespace HLTools
 				res.MissingModels = missingModels.ToArray();
 
 				#endregion
-
 			}
 
 			List<string> usedFileList = new List<string>();

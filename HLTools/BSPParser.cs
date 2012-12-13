@@ -28,81 +28,81 @@ namespace HLTools.BSP
 	/*
 	 * GoldSrc has bsp map version 30(0x1E)
 	 */
-	
+
 	public static class BinaryReaderExtensions
 	{
 		#region Big Endian
-		
+
 		public static int BReadInt32(this BinaryReader br)
 		{
 			byte b1 = br.ReadByte();
 			byte b2 = br.ReadByte();
 			byte b3 = br.ReadByte();
 			byte b4 = br.ReadByte();
-			
+
 			return ((b4 << 24) | (b3 << 16) | (b2 << 8) | b1);
 		}
-		
+
 		public static uint BReadUInt32(this BinaryReader br)
 		{
 			byte b1 = br.ReadByte();
 			byte b2 = br.ReadByte();
 			byte b3 = br.ReadByte();
 			byte b4 = br.ReadByte();
-			
+
 			return (uint)((b4 << 24) | (b3 << 16) | (b2 << 8) | b1);
 		}
-		
+
 		public static short BReadInt16(this BinaryReader br)
 		{
 			byte b1 = br.ReadByte();
 			byte b2 = br.ReadByte();
 			return (short)((b2 << 8) | b1);
 		}
-		
+
 		public static ushort BReadUInt16(this BinaryReader br)
 		{
 			byte b1 = br.ReadByte();
 			byte b2 = br.ReadByte();
 			return (ushort)((b2 << 8) | b1);
 		}
-		
+
 		#endregion
-		
+
 		#region Struct Reader
-		
+
 		public static Vector3f ReadVector3f(this BinaryReader br)
 		{
 			return new Vector3f(br.ReadSingle(), br.ReadSingle(), br.ReadSingle());
 		}
-		
+
 		public static DirectoryEntry BReadDirectoryEntry(this BinaryReader br)
 		{
 			return new DirectoryEntry(br.BReadInt32(), br.BReadInt32());
 		}
-		
+
 		public static MipTexture BReadMipTexture(this BinaryReader br)
 		{
 			return new MipTexture(Encoding.ASCII.GetString(br.ReadBytes(16)), br.BReadInt32(), br.BReadInt32(),
 			                      br.BReadInt32(), br.BReadInt32(), br.BReadInt32(), br.BReadInt32());
 		}
-		
+
 		public static float BReadFloat(this BinaryReader br)
 		{
 			return Convert.ToSingle(br.BReadInt32());
 		}
-		
+
 		public static BoundBoxShort BReadBoundBoxShort(this BinaryReader br)
 		{
 			return new BoundBoxShort(br.ReadInt16(), br.ReadInt16());
 		}
-		
+
 		public static BSPNode BReadBSPNode(this BinaryReader br)
 		{
 			return new BSPNode(br.BReadInt32(), br.ReadUInt16(), br.ReadUInt16(),
 			                   br.BReadBoundBoxShort(), br.ReadUInt16(), br.ReadUInt16());
 		}
-		
+
 		public static FaceTextureInfo BReadFaceTextureInfo(this BinaryReader br)	
 		{
 			return new FaceTextureInfo(br.ReadVector3f(),br.BReadFloat(),
@@ -116,40 +116,40 @@ namespace HLTools.BSP
 			                br.BReadUInt16(), br.ReadByte(), br.ReadByte(), br.ReadByte(), br.ReadByte(),
 			                br.ReadInt32());
 		}
-		
+
 		public static ClipNode BReadClipNode(this BinaryReader br)
 		{
 			return new ClipNode(br.BReadUInt32(), br.BReadInt16(), br.BReadInt16());
 		}
-		
+
 		public static BSPLeaf BReadBSPLeaf(this BinaryReader br)
 		{
 			return new BSPLeaf(br.ReadInt32(), br.ReadInt32(), br.BReadBoundBoxShort(), br.BReadUInt16(),
 			                   br.BReadUInt16(), br.ReadByte(), br.ReadByte(), br.ReadByte(), br.ReadByte());
 		}
-		
+
 		public static Edge BReadEdge(this BinaryReader br)
 		{
 			return new Edge(br.BReadUInt16(), br.BReadUInt16());
 		}
-		
+
 		public static BoundBox BReadBoundBox(this BinaryReader br)
 		{
 			return new BoundBox(br.ReadVector3f(), br.ReadVector3f());
 		}
-		
+
 		public static Model BReadModel(this BinaryReader br)
 		{
 			return new Model(br.BReadBoundBox(), br.ReadVector3f(), br.ReadInt32(), br.ReadInt32(), 
 			                 br.ReadInt32(), br.ReadInt32(), br.ReadInt32(), br.ReadInt32(), br.ReadInt32());
-	
+
 		}
-		
+
 		#endregion
 	}
 
 	#region Structs
-	
+
 	public struct DirectoryEntry
 	{
 		public DirectoryEntry(int offset, int size)
@@ -157,11 +157,11 @@ namespace HLTools.BSP
 			this.offset = offset;
 			this.size = size;
 		}
-		
+
 		public int offset;
 		public int size;
 	}
-		
+
 	public struct Vector3f
 	{
 		public Vector3f(float x, float y, float z)
@@ -170,24 +170,24 @@ namespace HLTools.BSP
 			this.y = y;
 			this.z = z;
 		}
-		
+
 		public float x,y,z;
-		
+
 		public static int Size { get { return sizeof(float) * 3; } }
 	}
-	
+
 	public struct Plane
 	{
 		public Vector3f normal;
 		public float distance;
 		public int type;
-		
+
 		public static int Size
 		{
 			get { return (4+4+4)+4+8; }
 		}
 	}
-	
+
 	public struct BoundBox
 	{
 		public BoundBox(Vector3f minimum, Vector3f maximum)
@@ -195,27 +195,28 @@ namespace HLTools.BSP
 			this.minimum = minimum;
 			this.maximum = maximum;
 		}
+
 		public Vector3f minimum;
 		public Vector3f maximum;
-		
+
 		public static int Size { get { return Vector3f.Size + Vector3f.Size; } }
 	}
-	
+
 	public struct MipTexture
 	{
 		public MipTexture(string name, int width, int height, int offset1, int offset2, int offset3, int offset4)
 		{
 			this.name = name;
-			
+
 			this.width = width;
 			this.height = height;
-			
+
 			this.offset1 = offset1;
 			this.offset2 = offset2;
 			this.offset3 = offset3;
 			this.offset4 = offset4;
 		}
-		
+
 		// TODO: evaluate bsp files on how correctly they save stuff
 		public string Name {
 			get {
@@ -241,7 +242,7 @@ namespace HLTools.BSP
 			get { return 16 + 8 + 4 * 8; }
 		}
 	}
-	
+
 	public struct BSPNode
 	{
 		public BSPNode(int plane_id, ushort front, ushort back, BoundBoxShort box, ushort face_id, ushort face_num)
@@ -253,20 +254,20 @@ namespace HLTools.BSP
 			this.face_id = face_id;
 			this.face_num = face_num;
 		}
-		
+
 		public int plane_id;
 		public ushort front;
 		public ushort back;
 		public BoundBoxShort box;
 		public ushort face_id;
 		public ushort face_num;
-		
+
 		public static int Size
 		{
 			get { return 4 + 2 + 2 + BoundBoxShort.Size + 2 + 2; }
 		}
 	}
-	
+
 	public struct BoundBoxShort
 	{
 		public BoundBoxShort(short min, short max)
@@ -274,16 +275,16 @@ namespace HLTools.BSP
 			this.min = min;
 			this.max = max;
 		}
-		
+
 		public short min;
 		public short max;
-		
+
 		public static int Size
 		{
 			get { return 2 + 2; }
 		}
 	}
-	
+
 	public struct FaceTextureInfo
 	{
 		public FaceTextureInfo(Vector3f vectorS, float distS, Vector3f vectorT, 
@@ -296,18 +297,17 @@ namespace HLTools.BSP
 			this.texture_id = texture_id;
 			this.animated = animated;
 		}
-		
+
 		public Vector3f vectorS;
 		public float distS;
 		public Vector3f vectorT;
 		public float distT;
 		public uint texture_id;
 		public uint animated;
-		
-		
+
 		public static int Size { get { return (3 * 4 + 4) * 2 + 4 + 4; } }
 	}
-	
+
 	public struct Face
 	{
 		public Face(ushort plane_id, ushort side, uint ledge_id, ushort ledge_num,
@@ -315,37 +315,37 @@ namespace HLTools.BSP
 		            byte light2, int lightmap)
 		{
 			this.plane_id = plane_id;
-			
+
 			this.side = side;
 			this.ledge_id = ledge_id;
-			
+
 			this.ledge_num = ledge_num;
 			this.texinfo_id = texinfo_id;
-			
+
 			this.typelight = typelight;
 			this.baselight = baselight;
 			this.light1 = light1;
 			this.light2 = light2;
 			this.lightmap = lightmap;
 		}
-		            
+
 		public ushort plane_id;
-		
+
 		public ushort side;
 		public uint ledge_id;
-		
+
 		public ushort ledge_num;
 		public ushort texinfo_id;
-		
+
 		public byte typelight;
 		public byte baselight;
 		public byte light1;
 		public byte light2;
 		public int lightmap;
-		
+
 		public static int Size { get { return 2 + 2 + 4 + 2 + 2 + 4 + 4; } }
 	}
-	
+
 	public struct ClipNode
 	{
 		public ClipNode(uint planenum, short front, short back)
@@ -354,14 +354,14 @@ namespace HLTools.BSP
 			this.front = front;
 			this.back = back;
 		}
-		
+
 		public uint planenum;
 		public short front;
 		public short back;
-		
+
 		public static int Size { get { return 4 + 2 + 2; } }
 	}
-	
+
 	public struct BSPLeaf
 	{
 		public BSPLeaf(int type, int vislist, BoundBoxShort bound, ushort lface_id, ushort lface_num,
@@ -377,7 +377,7 @@ namespace HLTools.BSP
 			this.sndslime = sndslime;
 			this.sndlava = sndlava;
 		}
-		
+
 		public int type;
 		public int vislist;
 		public BoundBoxShort bound;
@@ -387,10 +387,10 @@ namespace HLTools.BSP
 		public byte sndsky;
 		public byte sndslime;
 		public byte sndlava;
-		
+
 		public static int Size { get { return 4 + 4 + BoundBoxShort.Size + 2 + 2 + 4; } }
 	}
-	
+
 	public struct Edge
 	{
 		public Edge(ushort vertex0, ushort vertex1)
@@ -398,13 +398,13 @@ namespace HLTools.BSP
 			this.vertex0 = vertex0;
 			this.vertex1 = vertex1;
 		}
-		
+
 		public ushort vertex0;
 		public ushort vertex1;
 		
 		public static int Size { get { return 2 + 2; } }
 	}
-	
+
 	public struct Model
 	{
 		public Model(BoundBox bound, Vector3f origin, int node_id0, int node_id1,
@@ -420,7 +420,7 @@ namespace HLTools.BSP
 			this.face_id = face_id;
 			this.face_num = face_num;
 		}
-		
+
 		public BoundBox bound;
 		public Vector3f origin;
 		public int node_id0;
@@ -433,9 +433,9 @@ namespace HLTools.BSP
 		
 		public static int Size { get { return BoundBox.Size + Vector3f.Size + 4 * 4 + 4 * 3; } }
 	}
-	
+
 	#endregion
-	
+
 	public class BSPParser
 	{
 		#region Delegates
@@ -455,7 +455,7 @@ namespace HLTools.BSP
 		public delegate void LoadEdgeListElementDelegate(short edge);
 		public delegate void LoadModelDelegate(Model model);
 		#endregion
-		
+
 		#region Events
 		//public event LoadDirectoryTableDelegate OnLoadDirectoryTable;
 		public event LoadEntitiesDelegate        OnLoadEntities;
@@ -473,22 +473,21 @@ namespace HLTools.BSP
 		public event LoadEdgeListElementDelegate OnLoadEdgeListElement;
 		public event LoadModelDelegate           OnLoadModel;	    
 	    #endregion
-		
+
 		private BinaryReader br;
-		
+
 		public BSPParser(Stream stream)
 		{
 			br = new BinaryReader(stream, Encoding.ASCII);
 		}
-		
+
 		#region Load Functions
-		
+
 		public bool LoadDirectoryTables()
 		{
-			try 
-			{
+			try {
 				Version = br.BReadInt32();
-				
+
 				// directories
 				Entities       = br.BReadDirectoryEntry();
 				Planes         = br.BReadDirectoryEntry();
@@ -505,26 +504,30 @@ namespace HLTools.BSP
 				Edges          = br.BReadDirectoryEntry();
 				EdgeList       = br.BReadDirectoryEntry();
 				Models         = br.BReadDirectoryEntry();
-				
+
 				//if (OnLoadDirectoryTable != null) OnLoadDirectoryTable();
-			} catch { return false; }
-			
+			} catch {
+				return false;
+			}
+
 			return true;
 		}
-		
+
 		public bool LoadEntities()
 		{
-			if (OnLoadEntities != null) OnLoadEntities(ReadEntities());
-			
+			if (OnLoadEntities != null) {
+				OnLoadEntities(ReadEntities());
+			}
+
 			return true;
 		}
-		
+
 		public string ReadEntities()
 		{
 			br.BaseStream.Seek(Entities.offset, SeekOrigin.Begin);			
 			return Encoding.ASCII.GetString(br.ReadBytes((int)Entities.size));
 		}
-		
+
 		public bool LoadPlanes()
 		{
 			br.BaseStream.Seek(Planes.offset, SeekOrigin.Begin);
@@ -534,11 +537,13 @@ namespace HLTools.BSP
 				p.normal = br.ReadVector3f();
 				p.distance = br.ReadSingle();
 				p.type = br.BReadInt32();
-				if (OnLoadPlane != null) OnLoadPlane(p);
+				if (OnLoadPlane != null) {
+					OnLoadPlane(p);
+				}
 			}
 			return true;
 		}
-		
+
 		public bool LoadMipTextureOffsets()
 		{
 			br.BaseStream.Seek(MipTextures.offset, SeekOrigin.Begin);
@@ -549,24 +554,24 @@ namespace HLTools.BSP
 			}
 			return true;
 		}
+
 		public bool LoadMipTextures()
 		{
 			if (MipTextureOffsets == null) {
 				return false;
 			}
-			
+
 			foreach (int offset in MipTextureOffsets) {
 				br.BaseStream.Seek(MipTextures.offset + offset, SeekOrigin.Begin);
 				OnLoadMipTexture(br.BReadMipTexture());
 			}
 			return true;
 		}
-		
+
 		public bool LoadVertices()
 		{
 			br.BaseStream.Seek(Vertices.offset, SeekOrigin.Begin);
-			for (int i = Vertices.offset; i < Vertices.offset + Vertices.size; i += Vector3f.Size)
-			{
+			for (int i = Vertices.offset; i < Vertices.offset + Vertices.size; i += Vector3f.Size) 	{
 				OnLoadVertex(br.ReadVector3f());
 			}
 			return true;
@@ -575,118 +580,118 @@ namespace HLTools.BSP
 		public bool LoadBSPNodes()
 		{
 			br.BaseStream.Seek(Nodes.offset, SeekOrigin.Begin);
-			
-			for (int i = Nodes.offset; i < Nodes.offset + Nodes.size; i += BSPNode.Size)
-			{
+
+			for (int i = Nodes.offset; i < Nodes.offset + Nodes.size; i += BSPNode.Size) {
 				OnLoadBSPNode(br.BReadBSPNode());
 			}
-			
+
 			return true;
 		}
-		
+
 		public bool LoadFaceTextureInfo()
 		{
 			br.BaseStream.Seek(TextureInfo.offset, SeekOrigin.Begin);
-			for (int i = TextureInfo.offset; i < TextureInfo.offset + TextureInfo.size; i += FaceTextureInfo.Size)
-			{
-				if (OnLoadFaceTextureInfo != null) OnLoadFaceTextureInfo(br.BReadFaceTextureInfo());
+			for (int i = TextureInfo.offset; i < TextureInfo.offset + TextureInfo.size; i += FaceTextureInfo.Size) 	{
+				if (OnLoadFaceTextureInfo != null) {
+					OnLoadFaceTextureInfo(br.BReadFaceTextureInfo());
+				}
 			}
 			return true;
 		}
-		
+
 		public bool LoadFaces()
 		{
 			br.BaseStream.Seek(Faces.offset, SeekOrigin.Begin);
-			for (int i = Faces.offset; i < Faces.offset + Faces.size; i += Face.Size)
-			{
-				if (OnLoadFace != null) OnLoadFace(br.BReadFace());
+			for (int i = Faces.offset; i < Faces.offset + Faces.size; i += Face.Size) {
+				if (OnLoadFace != null) {
+					OnLoadFace(br.BReadFace());
+				}
 			}
 			return true;
 		}
-		
+
 		public bool LoadLightMaps()
 		{
-			if (OnLoadLightMap != null)
-			{
+			if (OnLoadLightMap != null) {
 				br.BaseStream.Seek(Lightmaps.offset, SeekOrigin.Begin);
-				for (int i = Lightmaps.offset; i < Lightmaps.offset + Lightmaps.size; i++) // one byte
+				for (int i = Lightmaps.offset; i < Lightmaps.offset + Lightmaps.size; i++) {
+					// one byte
 					OnLoadLightMap(br.ReadByte());
+				}
 			}
 			return true;
 		}
-		
+
 		public bool LoadClipNodes()
 		{
-			if (OnLoadClipNode != null)
-			{
+			if (OnLoadClipNode != null) {
 				br.BaseStream.Seek(Clipnodes.offset, SeekOrigin.Begin);
-				for (int i = Clipnodes.offset; i < Clipnodes.offset + Clipnodes.size; i += ClipNode.Size)
+				for (int i = Clipnodes.offset; i < Clipnodes.offset + Clipnodes.size; i += ClipNode.Size) {
 					OnLoadClipNode(br.BReadClipNode());
+				}
 			}
 			return true;
 		}
-		
+
 		public bool LoadBSPLeaves()
 		{
-			if (OnLoadBSPLeaf != null)
-			{
+			if (OnLoadBSPLeaf != null) {
 				br.BaseStream.Seek(Leaves.offset, SeekOrigin.Begin);
-				for (int i = Leaves.offset; i < Leaves.offset + Leaves.size; i += BSPLeaf.Size)
+				for (int i = Leaves.offset; i < Leaves.offset + Leaves.size; i += BSPLeaf.Size) {
 					OnLoadBSPLeaf(br.BReadBSPLeaf());
-				
+				}
 			}
 			return true;
 		}
-		
+
 		public bool LoadFaceList()
 		{
-			if (OnLoadFaceListElement != null)
-			{
+			if (OnLoadFaceListElement != null) {
 				br.BaseStream.Seek(FaceList.offset, SeekOrigin.Begin);
-				for (int i = FaceList.offset; i < FaceList.offset + FaceList.size; i+= Face.Size)
+				for (int i = FaceList.offset; i < FaceList.offset + FaceList.size; i+= Face.Size) {
 					OnLoadFaceListElement(br.BReadInt16());
+				}
 			}
 			return true;
 		}
-		
+
 		public bool LoadEdges()
 		{
-			if (OnLoadEdge != null)
-			{
+			if (OnLoadEdge != null) {
 				br.BaseStream.Seek(Edges.offset, SeekOrigin.Begin);
-				for (int i = Edges.offset; i < Edges.offset + Edges.size; i += Edge.Size)
+				for (int i = Edges.offset; i < Edges.offset + Edges.size; i += Edge.Size) {
 					OnLoadEdge(br.BReadEdge());
+				}
 			}
 			return true;
 		}
-		
+
 		public bool LoadEdgeList()
 		{
-			if (OnLoadEdgeListElement != null)
-			{
+			if (OnLoadEdgeListElement != null) {
 				br.BaseStream.Seek(EdgeList.offset, SeekOrigin.Begin);
-				for (int i = EdgeList.offset; i < EdgeList.offset + EdgeList.size; i += 2)
+				for (int i = EdgeList.offset; i < EdgeList.offset + EdgeList.size; i += 2) {
 					OnLoadEdgeListElement(br.BReadInt16());
+				}
 			}
 			return true;
 		}
-		
+
 		public bool LoadModels()
 		{
-			if (OnLoadModel != null)
-			{
+			if (OnLoadModel != null) {
 				br.BaseStream.Seek(Models.offset, SeekOrigin.Begin);
-				for (int i = Models.offset; i < Models.offset + Models.size; i += Model.Size)
+				for (int i = Models.offset; i < Models.offset + Models.size; i += Model.Size) {
 					OnLoadModel(br.BReadModel());
-				
+				}
 			}
 			return true;
 		}
-		
+
 		#endregion
-		
+
 		#region Public Fields
-		
+
 		public int Version { get; protected set; }
 		public DirectoryEntry Entities { get; protected set; }
 		public DirectoryEntry Planes { get; protected set; }
@@ -704,7 +709,7 @@ namespace HLTools.BSP
 		public DirectoryEntry Edges { get; protected set; }
 		public DirectoryEntry EdgeList { get; protected set; }
 		public DirectoryEntry Models { get; protected set; }
-		
+
 		#endregion
 
 		public void Close()
