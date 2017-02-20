@@ -29,7 +29,6 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
-    <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssemblyInfo.cs" />
@@ -37,6 +36,7 @@
     <Compile Include="EntityParser.cs" />
     <Compile Include="Verifier.cs" />
     <Compile Include="WADParser.cs" />
+    <Compile Include="BinaryReaderExtensions.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>
