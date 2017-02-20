@@ -29,13 +29,13 @@ namespace HLTools.WAD
 		public byte padding2;
 		// TODO: evaluate wad files on how correctly they save stuff
 		public string Filename {
-			get { 
+			get {
 				int index = filename.IndexOf('\0');
 				if (index >= 0) {
 					return filename.Substring(0, index);
 				}
 				return filename;
-			} 
+			}
 		}
 		public string filename;
 	}
@@ -43,7 +43,7 @@ namespace HLTools.WAD
 	public static class BinaryReaderExtensions
 	{
 		#region Big Endian
-		
+
 		public static int BReadInt32(this BinaryReader br)
 		{
 			byte b1 = br.ReadByte();
@@ -60,7 +60,7 @@ namespace HLTools.WAD
 			byte b2 = br.ReadByte();
 			byte b3 = br.ReadByte();
 			byte b4 = br.ReadByte();
-			
+
 			return (uint)((b4 << 24) | (b3 << 16) | (b2 << 8) | b1);
 		}
 

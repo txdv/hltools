@@ -9,8 +9,8 @@ namespace HLTools.BSP.Test
 		public static void Main(string[] args)
 		{
 			if (args.Length > 0) {
-				foreach (string map in args) {	
-					LoadBSPMap(map);	
+				foreach (string map in args) {
+					LoadBSPMap(map);
 				}
 			} else {
 				LoadBSPMap("de_dust.bsp");
@@ -30,7 +30,7 @@ namespace HLTools.BSP.Test
 				foreach (var entity in ep.Entities) {
 					Console.Write("{");
 					foreach (var kvp in entity) {
-						Console.Write(kvp);	
+						Console.Write(kvp);
 						Console.Write(",");
 					}
 					Console.WriteLine("}");
@@ -49,18 +49,18 @@ namespace HLTools.BSP.Test
 				Console.WriteLine (entities);
 				EntityParser ep = new EntityParser(entities);
 				var ent = ep.ReadEntities();
-	
+
 				Console.WriteLine (ent["worldspawn"][0]["wad"]);
 				Console.WriteLine (ent["worldspawn"][0]["skyname"]);
 				if (ent.ContainsKey("ambient_generic")) {
 					var sounds = ent["ambient_generic"];
 					foreach (var sound in sounds) {
-						Console.WriteLine (sound["message"]);	
+						Console.WriteLine (sound["message"]);
 					}
 				}
 			}
 		}
-		
+
 		public static void LoadBSPMap(string file)
 		{
 			FileStream fs = File.OpenRead(file);

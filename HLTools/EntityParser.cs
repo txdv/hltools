@@ -24,7 +24,7 @@ namespace HLTools.BSP
 		private void ReadWhiteSpaces()
 		{
 			while (IsWhiteSpace(entities[position])) {
-				position++;	
+				position++;
 			}
 		}
 
@@ -35,7 +35,7 @@ namespace HLTools.BSP
 			} else if (entities[position] == c) {
 				position++;
 			} else {
-				throw new Exception(string.Format("Expected {0} at position {1}", c, position));	
+				throw new Exception(string.Format("Expected {0} at position {1}", c, position));
 			}
 		}
 
@@ -67,7 +67,7 @@ namespace HLTools.BSP
 			ReadWhiteSpaces();
 
 			if (entities[position] != '{') {
-				return null;	
+				return null;
 			}
 
 			Dictionary<string, string> dict = new Dictionary<string, string>();

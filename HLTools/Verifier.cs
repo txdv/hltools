@@ -39,13 +39,13 @@ namespace HLTools
 		{
 			// HACK: this happens, apparently /models/bla.mdl = models/bla.mdl
 			if (file.StartsWith("/")) {
-				file = file.Substring(1);	
+				file = file.Substring(1);
 			}
 
 			ModDirectory = moddir;
 			File = file;
 		}
-		
+
 		public ValveFile(string fullpath)
 			: this(fullpath.GetModDir(), fullpath.GetBareFilename())
 		{
@@ -67,7 +67,7 @@ namespace HLTools
 		public ValveFileDifference Compare(ValveFile file)
 		{
 			if (File == file.File) {
-				if (ModDirectory == file.ModDirectory) { 
+				if (ModDirectory == file.ModDirectory) {
 					return ValveFileDifference.Equal;
 				} else {
 					return ValveFileDifference.EqualFile;
@@ -234,7 +234,7 @@ namespace HLTools
 				if (result == ValveFileDifference.Equal) {
 					return file;
 				} else if (result == ValveFileDifference.EqualFile) {
-					potential = existingFile;	
+					potential = existingFile;
 				}
 			}
 
@@ -348,7 +348,7 @@ namespace HLTools
 				res.NotExistingFiles  =  notExistingFiles.ToArray();
 
 				#region Textures
-	
+
 				List<string> existingFilenames = new List<string>();
 				foreach (var wadFile in existingWads) {
 					WADParser wp = new WADParser(File.OpenRead(wadFile.ToString(BaseDirectory)));
@@ -360,7 +360,7 @@ namespace HLTools
 				}
 
 				List<string> missingTextures = new List<string>();
-	
+
 				foreach (var item in textureList) {
 					if (!existingFilenames.Contains(item.ToLower())) {
 						missingTextures.Add(item);
