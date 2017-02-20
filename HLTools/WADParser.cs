@@ -8,9 +8,16 @@ namespace HLTools.WAD
 	[StructLayout(LayoutKind.Sequential, Pack=1)]
 	public struct WADFile
 	{
-		public WADFile(uint offset, uint compressedFileSize, uint uncompressedFileSize,
-		               byte fileType, byte compressionType, byte padding, byte padding2, string filename)
-		{
+		public WADFile(
+			uint offset,
+			uint compressedFileSize,
+			uint uncompressedFileSize,
+			byte fileType,
+			byte compressionType,
+			byte padding,
+			byte padding2,
+			string filename
+		) {
 			this.offset = offset;
 			this.compressedFileSize = compressedFileSize;
 			this.uncomrepssedFileSize = uncompressedFileSize;
@@ -20,6 +27,7 @@ namespace HLTools.WAD
 			this.padding2 = padding;
 			this.filename = filename;
 		}
+
 		public uint offset;
 		public uint compressedFileSize;
 		public uint uncomrepssedFileSize;
@@ -27,6 +35,7 @@ namespace HLTools.WAD
 		public byte compressionType;
 		public byte padding;
 		public byte padding2;
+
 		// TODO: evaluate wad files on how correctly they save stuff
 		public string Filename {
 			get {
@@ -82,10 +91,16 @@ namespace HLTools.WAD
 
 		public static WADFile ReadWADFile(this BinaryReader br)
 		{
-			return new WADFile(br.BReadUInt32(), br.BReadUInt32(), br.BReadUInt32(), br.ReadByte(),
-			                   br.ReadByte(), br.ReadByte(), br.ReadByte(),
-			                   Encoding.ASCII.GetString(br.ReadBytes(16)).TrimEnd(new char[] { '\0' })
-			                   );
+			return new WADFile(
+				br.BReadUInt32(),
+				br.BReadUInt32(),
+				br.BReadUInt32(),
+				br.ReadByte(),
+				br.ReadByte(),
+				br.ReadByte(),
+				br.ReadByte(),
+				Encoding.ASCII.GetString(br.ReadBytes(16)).TrimEnd(new char[] { '\0' })
+			);
 		}
 	}
 

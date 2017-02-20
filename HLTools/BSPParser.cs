@@ -52,18 +52,32 @@ namespace HLTools.BSP
 
 		public static Vector3f ReadVector3f(this BinaryReader br)
 		{
-			return new Vector3f(br.ReadSingle(), br.ReadSingle(), br.ReadSingle());
+			return new Vector3f(
+				br.ReadSingle(),
+				br.ReadSingle(),
+				br.ReadSingle()
+			);
 		}
 
 		public static DirectoryEntry BReadDirectoryEntry(this BinaryReader br)
 		{
-			return new DirectoryEntry(br.BReadInt32(), br.BReadInt32());
+			return new DirectoryEntry(
+				br.BReadInt32(),
+				br.BReadInt32()
+			);
 		}
 
 		public static MipTexture BReadMipTexture(this BinaryReader br)
 		{
-			return new MipTexture(Encoding.ASCII.GetString(br.ReadBytes(16)), br.BReadInt32(), br.BReadInt32(),
-			                      br.BReadInt32(), br.BReadInt32(), br.BReadInt32(), br.BReadInt32());
+			return new MipTexture(
+				Encoding.ASCII.GetString(br.ReadBytes(16)),
+				br.BReadInt32(),
+				br.BReadInt32(),
+				br.BReadInt32(),
+				br.BReadInt32(),
+				br.BReadInt32(),
+				br.BReadInt32()
+			);
 		}
 
 		public static float BReadFloat(this BinaryReader br)
@@ -73,38 +87,74 @@ namespace HLTools.BSP
 
 		public static BoundBoxShort BReadBoundBoxShort(this BinaryReader br)
 		{
-			return new BoundBoxShort(br.ReadInt16(), br.ReadInt16());
+			return new BoundBoxShort(
+				br.ReadInt16(),
+				br.ReadInt16()
+			);
 		}
 
 		public static BSPNode BReadBSPNode(this BinaryReader br)
 		{
-			return new BSPNode(br.BReadInt32(), br.ReadUInt16(), br.ReadUInt16(),
-			                   br.BReadBoundBoxShort(), br.ReadUInt16(), br.ReadUInt16());
+			return new BSPNode(
+				br.BReadInt32(),
+				br.ReadUInt16(),
+				br.ReadUInt16(),
+				br.BReadBoundBoxShort(),
+				br.ReadUInt16(),
+				br.ReadUInt16()
+			);
 		}
 
-		public static FaceTextureInfo BReadFaceTextureInfo(this BinaryReader br)	
+		public static FaceTextureInfo BReadFaceTextureInfo(this BinaryReader br)
 		{
-			return new FaceTextureInfo(br.ReadVector3f(),br.BReadFloat(),
-                                       br.ReadVector3f(), br.BReadFloat(),
-                                       br.BReadUInt32(), br.BReadUInt32());
+			return new FaceTextureInfo(
+				br.ReadVector3f(),
+				br.BReadFloat(),
+				br.ReadVector3f(),
+				br.BReadFloat(),
+				br.BReadUInt32(),
+				br.BReadUInt32()
+			);
 		}
-		
+
 		public static Face BReadFace(this BinaryReader br)
 		{
-			return new Face(br.BReadUInt16(), br.BReadUInt16(), br.BReadUInt32(), br.BReadUInt16(),
-			                br.BReadUInt16(), br.ReadByte(), br.ReadByte(), br.ReadByte(), br.ReadByte(),
-			                br.ReadInt32());
+			return new Face(
+				br.BReadUInt16(),
+				br.BReadUInt16(),
+				br.BReadUInt32(),
+				br.BReadUInt16(),
+				br.BReadUInt16(),
+				br.ReadByte(),
+				br.ReadByte(),
+				br.ReadByte(),
+				br.ReadByte(),
+				br.ReadInt32()
+			);
 		}
 
 		public static ClipNode BReadClipNode(this BinaryReader br)
 		{
-			return new ClipNode(br.BReadUInt32(), br.BReadInt16(), br.BReadInt16());
+			return new ClipNode(
+				br.BReadUInt32(),
+				br.BReadInt16(),
+				br.BReadInt16()
+			);
 		}
 
 		public static BSPLeaf BReadBSPLeaf(this BinaryReader br)
 		{
-			return new BSPLeaf(br.ReadInt32(), br.ReadInt32(), br.BReadBoundBoxShort(), br.BReadUInt16(),
-			                   br.BReadUInt16(), br.ReadByte(), br.ReadByte(), br.ReadByte(), br.ReadByte());
+			return new BSPLeaf(
+				br.ReadInt32(),
+				br.ReadInt32(),
+				br.BReadBoundBoxShort(),
+				br.BReadUInt16(),
+				br.BReadUInt16(),
+				br.ReadByte(),
+				br.ReadByte(),
+				br.ReadByte(),
+				br.ReadByte()
+			);
 		}
 
 		public static Edge BReadEdge(this BinaryReader br)
@@ -119,9 +169,26 @@ namespace HLTools.BSP
 
 		public static Model BReadModel(this BinaryReader br)
 		{
-			return new Model(br.BReadBoundBox(), br.ReadVector3f(), br.ReadInt32(), br.ReadInt32(), 
-			                 br.ReadInt32(), br.ReadInt32(), br.ReadInt32(), br.ReadInt32(), br.ReadInt32());
+			return new Model(
+				br.BReadBoundBox(),
+				br.ReadVector3f(),
+				br.ReadInt32(),
+				br.ReadInt32(),
+				br.ReadInt32(),
+				br.ReadInt32(),
+				br.ReadInt32(),
+				br.ReadInt32(),
+				br.ReadInt32()
+			);
+		}
 
+		public static Plane ReadPlane(this BinaryReader br)
+		{
+			return new Plane(
+				br.ReadVector3f(),
+				br.ReadSingle(),
+				br.BReadInt32()
+			);
 		}
 
 		#endregion
@@ -157,13 +224,20 @@ namespace HLTools.BSP
 
 	public struct Plane
 	{
+		public Plane(Vector3f normal, float distance, int type)
+		{
+			this.normal = normal;
+			this.distance = distance;
+			this.type = type;
+		}
+
 		public Vector3f normal;
 		public float distance;
 		public int type;
 
 		public static int Size
 		{
-			get { return (4+4+4)+4+8; }
+			get { return Vector3f.Size + 4 + 8; }
 		}
 	}
 
@@ -207,15 +281,15 @@ namespace HLTools.BSP
 			}
 		}
 		public string name;
-		
+
 		public int width;
 		public int height;
-		
+
 		public int offset1;
 		public int offset2;
 		public int offset3;
 		public int offset4;
-		
+
 		public static int Size
 		{
 			get { return 16 + 8 + 4 * 8; }
@@ -266,9 +340,14 @@ namespace HLTools.BSP
 
 	public struct FaceTextureInfo
 	{
-		public FaceTextureInfo(Vector3f vectorS, float distS, Vector3f vectorT, 
-		               float distT, uint texture_id, uint animated)
-		{
+		public FaceTextureInfo(
+			Vector3f vectorS,
+			float distS,
+			Vector3f vectorT,
+			float distT,
+			uint texture_id,
+			uint animated
+		) {
 			this.vectorS = vectorS;
 			this.distS = distS;
 			this.vectorT = vectorT;
@@ -289,10 +368,18 @@ namespace HLTools.BSP
 
 	public struct Face
 	{
-		public Face(ushort plane_id, ushort side, uint ledge_id, ushort ledge_num,
-		            ushort texinfo_id, byte typelight, byte baselight, byte light1,
-		            byte light2, int lightmap)
-		{
+		public Face(
+			ushort plane_id,
+			ushort side,
+			uint ledge_id,
+			ushort ledge_num,
+			ushort texinfo_id,
+			byte typelight,
+			byte baselight,
+			byte light1,
+			byte light2,
+			int lightmap
+		) {
 			this.plane_id = plane_id;
 
 			this.side = side;
@@ -343,9 +430,17 @@ namespace HLTools.BSP
 
 	public struct BSPLeaf
 	{
-		public BSPLeaf(int type, int vislist, BoundBoxShort bound, ushort lface_id, ushort lface_num,
-		               byte sndwater, byte sndsky, byte sndslime, byte sndlava)
-		{
+		public BSPLeaf(
+			int type,
+			int vislist,
+			BoundBoxShort bound,
+			ushort lface_id,
+			ushort lface_num,
+			byte sndwater,
+			byte sndsky,
+			byte sndslime,
+			byte sndlava
+		) {
 			this.type = type;
 			this.vislist = vislist;
 			this.bound = bound;
@@ -380,15 +475,23 @@ namespace HLTools.BSP
 
 		public ushort vertex0;
 		public ushort vertex1;
-		
+
 		public static int Size { get { return 2 + 2; } }
 	}
 
 	public struct Model
 	{
-		public Model(BoundBox bound, Vector3f origin, int node_id0, int node_id1,
-		             int node_id2, int node_id3, int numleafs, int face_id, int face_num)
-		{
+		public Model(
+			BoundBox bound,
+			Vector3f origin,
+			int node_id0,
+			int node_id1,
+			int node_id2,
+			int node_id3,
+			int numleafs,
+			int face_id,
+			int face_num
+		) {
 			this.bound = bound;
 			this.origin = origin;
 			this.node_id0 = node_id0;
@@ -409,7 +512,7 @@ namespace HLTools.BSP
 		public int numleafs;
 		public int face_id;
 		public int face_num;
-		
+
 		public static int Size { get { return BoundBox.Size + Vector3f.Size + 4 * 4 + 4 * 3; } }
 	}
 
@@ -450,7 +553,7 @@ namespace HLTools.BSP
 		public event LoadFaceListElementDelegate OnLoadFaceListElement;
 		public event LoadEdgeDelegate            OnLoadEdge;
 		public event LoadEdgeListElementDelegate OnLoadEdgeListElement;
-		public event LoadModelDelegate           OnLoadModel;	    
+		public event LoadModelDelegate           OnLoadModel;
 	    #endregion
 
 		private BinaryReader br;
@@ -503,19 +606,16 @@ namespace HLTools.BSP
 
 		public string ReadEntities()
 		{
-			br.BaseStream.Seek(Entities.offset, SeekOrigin.Begin);			
+			br.BaseStream.Seek(Entities.offset, SeekOrigin.Begin);
 			return Encoding.ASCII.GetString(br.ReadBytes((int)Entities.size));
 		}
 
 		public bool LoadPlanes()
 		{
 			br.BaseStream.Seek(Planes.offset, SeekOrigin.Begin);
-			for (int i = Planes.offset; i < Planes.offset + Planes.size; i += Plane.Size)
-			{
-				Plane p;
-				p.normal = br.ReadVector3f();
-				p.distance = br.ReadSingle();
-				p.type = br.BReadInt32();
+			int n = Planes.size / Plane.Size;
+			for (int i = 0; i < n; i++) {
+				Plane p = br.ReadPlane();
 				if (OnLoadPlane != null) {
 					OnLoadPlane(p);
 				}
@@ -523,12 +623,23 @@ namespace HLTools.BSP
 			return true;
 		}
 
+		public Plane[] LoadPlanesArray()
+		{
+			br.BaseStream.Seek(Planes.offset, SeekOrigin.Begin);
+			int n = Planes.size / Plane.Size;
+			var planes = new Plane[n];
+			for (int i = 0; i < n; i++) {
+				planes[n] = br.ReadPlane();
+			}
+			return planes;
+		}
+
 		public bool LoadMipTextureOffsets()
 		{
 			br.BaseStream.Seek(MipTextures.offset, SeekOrigin.Begin);
 			int size = br.BReadInt32();
 			MipTextureOffsets = new int[size];
-			for (int j = 0; j < size; j++) { 
+			for (int j = 0; j < size; j++) {
 				MipTextureOffsets[j] = br.BReadInt32();
 			}
 			return true;
@@ -555,7 +666,19 @@ namespace HLTools.BSP
 			}
 			return true;
 		}
-		
+
+		public Vector3f[] LoadVerticesArray()
+		{
+			br.BaseStream.Seek(Vertices.offset, SeekOrigin.Begin);
+
+			int n = Vertices.size / Vector3f.Size;
+			var res = new Vector3f[n];
+			for (int i = 0; i < n; i++) {
+				res[i] = br.ReadVector3f ();
+			}
+			return res;
+		}
+
 		public bool LoadBSPNodes()
 		{
 			br.BaseStream.Seek(Nodes.offset, SeekOrigin.Begin);
@@ -565,6 +688,20 @@ namespace HLTools.BSP
 			}
 
 			return true;
+		}
+
+		public BSPNode[] LoadBSPNodesArray()
+		{
+			br.BaseStream.Seek(Nodes.offset, SeekOrigin.Begin);
+
+			int n = Nodes.size / BSPNode.Size;
+			var nodes = new BSPNode[n];
+
+			for (int i = 0; i < n; i++) {
+				nodes[i] = br.BReadBSPNode();
+			}
+
+			return nodes;
 		}
 
 		public bool LoadFaceTextureInfo()
@@ -621,6 +758,17 @@ namespace HLTools.BSP
 				}
 			}
 			return true;
+		}
+
+		public BSPLeaf[] LoadBSPLeavesArray()
+		{
+			br.BaseStream.Seek(Leaves.offset, SeekOrigin.Begin);
+			int n = Leaves.size / BSPLeaf.Size;
+			var leaves = new BSPLeaf[n];
+			for (int i = 0; i < n; i++) {
+				leaves[i] = br.BReadBSPLeaf();
+			}
+			return leaves;
 		}
 
 		public bool LoadFaceList()
