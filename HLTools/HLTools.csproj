@@ -37,16 +37,20 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssemblyInfo.cs" />
-    <Compile Include="BSPParser.cs" />
-    <Compile Include="EntityParser.cs" />
     <Compile Include="Verifier.cs" />
-    <Compile Include="WADParser.cs" />
     <Compile Include="BinaryReaderExtensions.cs" />
     <Compile Include="SizeHelper.cs" />
+    <Compile Include="BSP\BSPParser.cs" />
+    <Compile Include="BSP\EntityParser.cs" />
+    <Compile Include="WAD\WADParser.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="OpenTK.dll.config" />
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="BSP\" />
+    <Folder Include="WAD\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>
