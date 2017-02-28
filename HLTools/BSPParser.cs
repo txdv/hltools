@@ -63,9 +63,10 @@ namespace HLTools.BSP
 		{
 			return new BSPNode(
 				br.BReadInt32(),
-				br.ReadUInt16(),
-				br.ReadUInt16(),
-				br.BReadBoundBoxShort(),
+				br.ReadInt16(),
+				br.ReadInt16(),
+				new short[] { br.ReadInt16(), br.ReadInt16(), br.ReadInt16() },
+				new short[] { br.ReadInt16(), br.ReadInt16(), br.ReadInt16() },
 				br.ReadUInt16(),
 				br.ReadUInt16()
 			);
@@ -113,13 +114,11 @@ namespace HLTools.BSP
 			return new BSPLeaf(
 				br.ReadInt32(),
 				br.ReadInt32(),
-				br.BReadBoundBoxShort(),
+				new short[] { br.ReadInt16(), br.ReadInt16(), br.ReadInt16() },
+				new short[] { br.ReadInt16(), br.ReadInt16(), br.ReadInt16() },
 				br.BReadUInt16(),
 				br.BReadUInt16(),
-				br.ReadByte(),
-				br.ReadByte(),
-				br.ReadByte(),
-				br.ReadByte()
+				new byte[] { br.ReadByte(), br.ReadByte(), br.ReadByte(), br.ReadByte() }
 			);
 		}
 
@@ -254,22 +253,29 @@ namespace HLTools.BSP
 		}
 	}
 
-	public struct BSPNode
+	unsafe public struct BSPNode
 	{
-		public BSPNode(int plane_id, ushort front, ushort back, BoundBoxShort box, ushort face_id, ushort face_num)
+		public BSPNode(int plane_id, short front, short back, short[] nMins, short[] nMaxs, ushort face_id, ushort face_num)
 		{
 			this.plane_id = plane_id;
 			this.front = front;
 			this.back = back;
-			this.box = box;
+			fixed (short* pnMin = this.nMin)
+			fixed (short* pnMax = this.nMax)
+			for (int i = 0; i < 3; i++)
+			{
+				pnMin[i] = nMins[i];
+				pnMax[i] = nMaxs[i];
+			}
 			this.face_id = face_id;
 			this.face_num = face_num;
 		}
 
 		public int plane_id;
-		public ushort front;
-		public ushort back;
-		public BoundBoxShort box;
+		public short front;
+		public short back;
+		public fixed short nMin[3];
+		public fixed short nMax[3];
 		public ushort face_id;
 		public ushort face_num;
 
@@ -278,7 +284,38 @@ namespace HLTools.BSP
 				return sizeof(BSPNode);
 			}
 		}
+
+		unsafe public bool InBox(Vector3f vec)
 		{
+			fixed (short* vMin = nMin)
+			fixed (short* vMax = nMax)
+			{
+				return (
+					(
+						(float)vMin[0] <= vec.X && vec.X <= (float)vMax[0] &&
+						(float)vMin[1] <= vec.Y && vec.Y <= (float)vMax[1] &&
+						(float)vMin[2] <= vec.Z && vec.Z <= (float)vMax[2]
+					) || (
+						(float)vMin[0] >= vec.X && vec.X >= (float)vMax[0] &&
+						(float)vMin[1] >= vec.Y && vec.Y >= (float)vMax[1] &&
+						(float)vMin[2] >= vec.Z && vec.Z >= (float)vMax[2]
+					)
+				) ;
+			}
+		}
+
+		public override string ToString()
+		{
+			fixed (short* vMin = nMin)
+			fixed (short* vMax = nMax)
+			{
+				return string.Format(
+					"({0}:{1}) ({2}:{3}) ({4}:{5})",
+					vMin[0], vMax[0],
+					vMin[1], vMax[1],
+					vMin[2], vMax[2]
+				);
+			}
 		}
 	}
 
@@ -349,9 +386,10 @@ namespace HLTools.BSP
 			this.plane_id = plane_id;
 
 			this.side = side;
-			this.ledge_id = ledge_id;
 
+			this.ledge_id = ledge_id;
 			this.ledge_num = ledge_num;
+
 			this.texinfo_id = texinfo_id;
 
 			this.typelight = typelight;
@@ -364,9 +402,10 @@ namespace HLTools.BSP
 		public ushort plane_id;
 
 		public ushort side;
-		public uint ledge_id;
 
+		public uint ledge_id;
 		public ushort ledge_num;
+
 		public ushort texinfo_id;
 
 		public byte typelight;
@@ -402,43 +441,73 @@ namespace HLTools.BSP
 		}
 	}
 
-	public struct BSPLeaf
+	unsafe public struct BSPLeaf
 	{
 		public BSPLeaf(
-			int type,
-			int vislist,
-			BoundBoxShort bound,
-			ushort lface_id,
-			ushort lface_num,
-			byte sndwater,
-			byte sndsky,
-			byte sndslime,
-			byte sndlava
+			int nContents,
+			int nVisOffset,
+			short[] nMin,
+			short[] nMax,
+			ushort iFirstMarkSurface,
+			ushort nMarkSurfaces,
+			byte[] nAmbientLevels
 		) {
-			this.type = type;
-			this.vislist = vislist;
-			this.bound = bound;
-			this.lface_id = lface_id;
-			this.lface_num = lface_num;
-			this.sndwater = sndwater;
-			this.sndsky = sndsky;
-			this.sndslime = sndslime;
-			this.sndlava = sndlava;
+			this.nContents = nContents;
+			this.nVisOffset = nVisOffset;
+			fixed (short* pnMin = this.nMin)
+			fixed (short* pnMax = this.nMax)
+			for (int i = 0; i < 3; i++)
+			{
+				pnMin[i] = nMin[i];
+				pnMax[i] = nMax[i];
+			}
+			this.iFirstMarkSurface = iFirstMarkSurface;
+			this.nMarkSurfaces = nMarkSurfaces;
 		}
 
-		public int type;
-		public int vislist;
-		public BoundBoxShort bound;
-		public ushort lface_id;
-		public ushort lface_num;
-		public byte sndwater;
-		public byte sndsky;
-		public byte sndslime;
-		public byte sndlava;
+		public int nContents;
+		public int nVisOffset;
+		public fixed short nMin[3];
+		public fixed short nMax[3];
+		public ushort iFirstMarkSurface;
+		public ushort nMarkSurfaces;
 
 		unsafe public static int Size {
 			get {
 				return sizeof(BSPLeaf);
+			}
+		}
+
+		public override string ToString()
+		{
+			fixed (short* vMin = nMin)
+			fixed (short* vMax = nMax)
+			{
+				return string.Format(
+					"({0}:{1}) ({2}:{3}) ({4}:{5})",
+					vMin[0], vMax[0],
+					vMin[1], vMax[1],
+					vMin[2], vMax[2]
+				);
+			}
+		}
+
+		unsafe public bool InBox(Vector3f vec)
+		{
+			fixed (short* vMin = nMin)
+			fixed (short* vMax = nMax)
+			{
+				return (
+					(
+						(float)vMin[0] <= vec.X && vec.X <= (float)vMax[0] &&
+						(float)vMin[1] <= vec.Y && vec.Y <= (float)vMax[1] &&
+						(float)vMin[2] <= vec.Z && vec.Z <= (float)vMax[2]
+					) || (
+						(float)vMin[0] >= vec.X && vec.X >= (float)vMax[0] &&
+						(float)vMin[1] >= vec.Y && vec.Y >= (float)vMax[1] &&
+						(float)vMin[2] >= vec.Z && vec.Z >= (float)vMax[2]
+					)
+				) ;
 			}
 		}
 	}
@@ -615,7 +684,7 @@ namespace HLTools.BSP
 			int n = Planes.size / Plane.Size;
 			var planes = new Plane[n];
 			for (int i = 0; i < n; i++) {
-				planes[n] = br.ReadPlane();
+				planes[i] = br.ReadPlane();
 			}
 			return planes;
 		}
@@ -644,20 +713,36 @@ namespace HLTools.BSP
 			return true;
 		}
 
-		public bool LoadVertices()
+		public MipTexture[] LoadMipTexturesArray()
+		{
+			if (MipTextureOffsets == null) {
+				LoadMipTextureOffsets();
+			}
+
+			int n = MipTextureOffsets.Length;
+			var ret = new MipTexture[n];
+			for (int i = 0; i < n; i++) {
+				br.BaseStream.Seek(MipTextures.offset + MipTextureOffsets[i], SeekOrigin.Begin);
+				ret[i] = br.BReadMipTexture();
+			}
+			return ret;
+		}
+
+		unsafe public bool LoadVertices()
 		{
 			br.BaseStream.Seek(Vertices.offset, SeekOrigin.Begin);
-			for (int i = Vertices.offset; i < Vertices.offset + Vertices.size; i += Vector3f.Size) 	{
+			int n = Vertices.size / sizeof(Vector3f);
+			for (int i = 0; i < n; i++) {
 				OnLoadVertex(br.ReadVector3f());
 			}
 			return true;
 		}
 
-		public Vector3f[] LoadVerticesArray()
+		unsafe public Vector3f[] LoadVerticesArray()
 		{
 			br.BaseStream.Seek(Vertices.offset, SeekOrigin.Begin);
 
-			int n = Vertices.size / Vector3f.Size;
+			int n = Vertices.size / sizeof(Vector3f);
 			var res = new Vector3f[n];
 			for (int i = 0; i < n; i++) {
 				res[i] = br.ReadVector3f ();
@@ -710,6 +795,17 @@ namespace HLTools.BSP
 				}
 			}
 			return true;
+		}
+
+		public Face[] LoadFaceArray()
+		{
+			br.BaseStream.Seek(Faces.offset, SeekOrigin.Begin);
+			int n = Faces.size / Face.Size;
+			var faces = new Face[n];
+			for (int i = 0; i < n; i++) {
+				faces[i] = br.BReadFace();
+			}
+			return faces;
 		}
 
 		public bool LoadLightMaps()
@@ -768,6 +864,17 @@ namespace HLTools.BSP
 			return true;
 		}
 
+		public short[] LoadFaceListArray()
+		{
+			br.BaseStream.Seek(FaceList.offset, SeekOrigin.Begin);
+			int n = FaceList.size / 2;
+			var res = new short[n];
+			for (int i = 0; i < n; i++) {
+				res[i] = br.BReadInt16();
+			}
+			return res;
+		}
+
 		public bool LoadEdges()
 		{
 			if (OnLoadEdge != null) {
@@ -779,6 +886,17 @@ namespace HLTools.BSP
 			return true;
 		}
 
+		public Edge[] LoadEdgesArray()
+		{
+			br.BaseStream.Seek(Edges.offset, SeekOrigin.Begin);
+			int n = Edges.size / Edge.Size;
+			var res = new Edge[n];
+			for (int i = 0; i < n; i++) {
+				res[i] = br.BReadEdge();
+			}
+			return res;
+		}
+
 		public bool LoadEdgeList()
 		{
 			if (OnLoadEdgeListElement != null) {
@@ -788,6 +906,18 @@ namespace HLTools.BSP
 				}
 			}
 			return true;
+		}
+
+		public int[] LoadEdgeListArray()
+		{
+			br.BaseStream.Seek(EdgeList.offset, SeekOrigin.Begin);
+			int n = EdgeList.size / 2;
+			var res = new int[n];
+			for (int i = 0; i < n; i++)
+			{
+				res[i] = br.BReadInt32();
+			}
+			return res;
 		}
 
 		public bool LoadModels()

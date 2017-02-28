@@ -63,7 +63,7 @@ namespace HLTools.WAD
 				br.ReadByte(),
 				br.ReadByte(),
 				br.ReadByte(),
-				Encoding.ASCII.GetString(br.ReadBytes(16)).TrimEnd(new char[] { '\0' })
+				Encoding.ASCII.GetString(br.ReadBytes(16)).TrimEnd('\0')
 			);
 		}
 	}
@@ -96,6 +96,17 @@ namespace HLTools.WAD
 					OnLoadFile(br.ReadWADFile());
 				}
 			}
+		}
+
+		public WADFile[] LoadFileArray()
+		{
+			br.BaseStream.Seek(Offset, SeekOrigin.Begin);
+			var n = FileCount;
+			var files = new WADFile[n];
+			for (int i = 0; i < n; i++) {
+				files[i] = br.ReadWADFile();
+			}
+			return files;
 		}
 
 		public static bool CheckMagic(byte[] bytes)
