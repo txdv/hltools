@@ -575,40 +575,22 @@ namespace HLTools.BSP
 
 	public class BSPParser
 	{
-		#region Delegates
-		//public delegate void LoadDirectoryTableDelegate();
-		public delegate void LoadEntitiesDelegate(string entities);
-		public delegate void LoadPlaneDelegate(Plane plane);
-		public delegate void LoadMipTextureDelegate(MipTexture texture);
-		public delegate void LoadVertexDelegate(Vector3f vertex);
-		public delegate void LoadBSPNode(BSPNode node);
-		public delegate void LoadFaceTextureInfoDelegate(FaceTextureInfo textureInfo);
-		public delegate void LoadFaceDelegate(Face face);
-		public delegate void LoadLightMapDelegate(byte lightmap);
-		public delegate void LoadClipNodeDelegate(ClipNode node);
-		public delegate void LoadBSPLeafDelegate(BSPLeaf leaf);
-		public delegate void LoadFaceListElementDelegate(short face_index);
-		public delegate void LoadEdgeDelegate(Edge edge);
-		public delegate void LoadEdgeListElementDelegate(short edge);
-		public delegate void LoadModelDelegate(Model model);
-		#endregion
-
 		#region Events
 		//public event LoadDirectoryTableDelegate OnLoadDirectoryTable;
-		public event LoadEntitiesDelegate        OnLoadEntities;
-		public event LoadPlaneDelegate           OnLoadPlane;
-		public event LoadMipTextureDelegate      OnLoadMipTexture;
-		public event LoadVertexDelegate          OnLoadVertex;
-		public event LoadBSPNode                 OnLoadBSPNode;
-		public event LoadFaceTextureInfoDelegate OnLoadFaceTextureInfo;
-		public event LoadFaceDelegate            OnLoadFace;
-		public event LoadLightMapDelegate        OnLoadLightMap;
-		public event LoadClipNodeDelegate        OnLoadClipNode;
-		public event LoadBSPLeafDelegate         OnLoadBSPLeaf;
-		public event LoadFaceListElementDelegate OnLoadFaceListElement;
-		public event LoadEdgeDelegate            OnLoadEdge;
-		public event LoadEdgeListElementDelegate OnLoadEdgeListElement;
-		public event LoadModelDelegate           OnLoadModel;
+		public event Action<string>          OnLoadEntities;
+		public event Action<Plane>           OnLoadPlane;
+		public event Action<MipTexture>      OnLoadMipTexture;
+		public event Action<Vector3f>        OnLoadVertex;
+		public event Action<BSPNode>         OnLoadBSPNode;
+		public event Action<FaceTextureInfo> OnLoadFaceTextureInfo;
+		public event Action<Face>            OnLoadFace;
+		public event Action<byte>            OnLoadLightMap;
+		public event Action<ClipNode>        OnLoadClipNode;
+		public event Action<BSPLeaf>         OnLoadBSPLeaf;
+		public event Action<short>           OnLoadFaceListElement;
+		public event Action<Edge>            OnLoadEdge;
+		public event Action<int>             OnLoadEdgeListElement;
+		public event Action<Model>           OnLoadModel;
 	    #endregion
 
 		private BinaryReader br;
@@ -677,17 +659,24 @@ namespace HLTools.BSP
 			return ret;
 		}
 
-		public bool LoadPlanes()
+		unsafe private bool Load<T>(DirectoryEntry entry, Func<T> read, Action<T> onLoad) where T : struct
 		{
-			br.BaseStream.Seek(Planes.offset, SeekOrigin.Begin);
-			int n = Planes.size / Plane.Size;
-			for (int i = 0; i < n; i++) {
-				Plane p = br.ReadPlane();
-				if (OnLoadPlane != null) {
-					OnLoadPlane(p);
+			if (onLoad != null) {
+				br.BaseStream.Seek(entry.offset, SeekOrigin.Begin);
+				int size = SizeHelper.SizeOf<T>();
+				int n = entry.size / size;
+
+				for (int i = 0; i < n; i++) {
+					onLoad(read());
 				}
 			}
+
 			return true;
+		}
+
+		public bool LoadPlanes()
+		{
+			return Load<Plane>(Planes, br.ReadPlane, OnLoadPlane);
 		}
 
 		public Plane[] LoadPlanesArray()
@@ -736,12 +725,7 @@ namespace HLTools.BSP
 
 		unsafe public bool LoadVertices()
 		{
-			br.BaseStream.Seek(Vertices.offset, SeekOrigin.Begin);
-			int n = Vertices.size / sizeof(Vector3f);
-			for (int i = 0; i < n; i++) {
-				OnLoadVertex(br.ReadVector3f());
-			}
-			return true;
+			return Load<Vector3f>(Vertices, br.ReadVector3f, OnLoadVertex);
 		}
 
 		unsafe public Vector3f[] LoadVerticesArray()
@@ -752,13 +736,7 @@ namespace HLTools.BSP
 
 		public bool LoadBSPNodes()
 		{
-			br.BaseStream.Seek(Nodes.offset, SeekOrigin.Begin);
-
-			for (int i = Nodes.offset; i < Nodes.offset + Nodes.size; i += BSPNode.Size) {
-				OnLoadBSPNode(br.BReadBSPNode());
-			}
-
-			return true;
+			return Load<BSPNode>(Nodes, br.BReadBSPNode, OnLoadBSPNode);
 		}
 
 		public BSPNode[] LoadBSPNodesArray()
@@ -768,24 +746,12 @@ namespace HLTools.BSP
 
 		public bool LoadFaceTextureInfo()
 		{
-			br.BaseStream.Seek(TextureInfo.offset, SeekOrigin.Begin);
-			for (int i = TextureInfo.offset; i < TextureInfo.offset + TextureInfo.size; i += FaceTextureInfo.Size) 	{
-				if (OnLoadFaceTextureInfo != null) {
-					OnLoadFaceTextureInfo(br.BReadFaceTextureInfo());
-				}
-			}
-			return true;
+			return Load<FaceTextureInfo>(TextureInfo, br.BReadFaceTextureInfo, OnLoadFaceTextureInfo);
 		}
 
 		public bool LoadFaces()
 		{
-			br.BaseStream.Seek(Faces.offset, SeekOrigin.Begin);
-			for (int i = Faces.offset; i < Faces.offset + Faces.size; i += Face.Size) {
-				if (OnLoadFace != null) {
-					OnLoadFace(br.BReadFace());
-				}
-			}
-			return true;
+			return Load<Face>(Faces, br.BReadFace, OnLoadFace);
 		}
 
 		public Face[] LoadFaceArray()
@@ -795,36 +761,17 @@ namespace HLTools.BSP
 
 		public bool LoadLightMaps()
 		{
-			if (OnLoadLightMap != null) {
-				br.BaseStream.Seek(Lightmaps.offset, SeekOrigin.Begin);
-				for (int i = Lightmaps.offset; i < Lightmaps.offset + Lightmaps.size; i++) {
-					// one byte
-					OnLoadLightMap(br.ReadByte());
-				}
-			}
-			return true;
+			return Load<byte>(Lightmaps, br.ReadByte, OnLoadLightMap);
 		}
 
 		public bool LoadClipNodes()
 		{
-			if (OnLoadClipNode != null) {
-				br.BaseStream.Seek(Clipnodes.offset, SeekOrigin.Begin);
-				for (int i = Clipnodes.offset; i < Clipnodes.offset + Clipnodes.size; i += ClipNode.Size) {
-					OnLoadClipNode(br.BReadClipNode());
-				}
-			}
-			return true;
+			return Load<ClipNode>(Clipnodes, br.BReadClipNode, OnLoadClipNode);
 		}
 
 		public bool LoadBSPLeaves()
 		{
-			if (OnLoadBSPLeaf != null) {
-				br.BaseStream.Seek(Leaves.offset, SeekOrigin.Begin);
-				for (int i = Leaves.offset; i < Leaves.offset + Leaves.size; i += BSPLeaf.Size) {
-					OnLoadBSPLeaf(br.BReadBSPLeaf());
-				}
-			}
-			return true;
+			return Load<BSPLeaf>(Leaves, br.BReadBSPLeaf, OnLoadBSPLeaf);
 		}
 
 		public BSPLeaf[] LoadBSPLeavesArray()
@@ -834,13 +781,7 @@ namespace HLTools.BSP
 
 		public bool LoadFaceList()
 		{
-			if (OnLoadFaceListElement != null) {
-				br.BaseStream.Seek(FaceList.offset, SeekOrigin.Begin);
-				for (int i = FaceList.offset; i < FaceList.offset + FaceList.size; i+= Face.Size) {
-					OnLoadFaceListElement(br.BReadInt16());
-				}
-			}
-			return true;
+			return Load<short>(FaceList, br.ReadInt16, OnLoadFaceListElement);
 		}
 
 		public short[] LoadFaceListArray()
@@ -850,13 +791,7 @@ namespace HLTools.BSP
 
 		public bool LoadEdges()
 		{
-			if (OnLoadEdge != null) {
-				br.BaseStream.Seek(Edges.offset, SeekOrigin.Begin);
-				for (int i = Edges.offset; i < Edges.offset + Edges.size; i += Edge.Size) {
-					OnLoadEdge(br.BReadEdge());
-				}
-			}
-			return true;
+			return Load<Edge>(Edges, br.BReadEdge, OnLoadEdge);
 		}
 
 		public Edge[] LoadEdgesArray()
@@ -866,13 +801,7 @@ namespace HLTools.BSP
 
 		public bool LoadEdgeList()
 		{
-			if (OnLoadEdgeListElement != null) {
-				br.BaseStream.Seek(EdgeList.offset, SeekOrigin.Begin);
-				for (int i = EdgeList.offset; i < EdgeList.offset + EdgeList.size; i += 2) {
-					OnLoadEdgeListElement(br.BReadInt16());
-				}
-			}
-			return true;
+			return Load<int>(EdgeList, br.BReadInt32, OnLoadEdgeListElement);
 		}
 
 		public int[] LoadEdgeListArray()
@@ -882,13 +811,7 @@ namespace HLTools.BSP
 
 		public bool LoadModels()
 		{
-			if (OnLoadModel != null) {
-				br.BaseStream.Seek(Models.offset, SeekOrigin.Begin);
-				for (int i = Models.offset; i < Models.offset + Models.size; i += Model.Size) {
-					OnLoadModel(br.BReadModel());
-				}
-			}
-			return true;
+			return Load<Model>(Models, br.BReadModel, OnLoadModel);
 		}
 
 		#endregion

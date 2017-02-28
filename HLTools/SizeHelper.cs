@@ -22,6 +22,11 @@ namespace HLTools
 			return size;
 		}
 
+		public static int SizeOf<T>()
+		{
+			return SizeOf(typeof(T));
+		}
+
 		private static int SizeOfType(Type type)
 		{
 			var dm = new DynamicMethod("SizeOfType", typeof(int), new Type[] { });
