@@ -185,12 +185,6 @@ namespace HLTools.BSP
 		public Vector3f normal;
 		public float distance;
 		public int type;
-
-		unsafe public static int Size {
-			get {
-				return sizeof(Plane);
-			}
-		}
 	}
 
 	public struct BoundBox
@@ -203,12 +197,6 @@ namespace HLTools.BSP
 
 		public Vector3f minimum;
 		public Vector3f maximum;
-
-		unsafe public static int Size {
-			get {
-				return sizeof(BoundBox);
-			}
-		}
 	}
 
 	public struct MipTexture
@@ -279,12 +267,6 @@ namespace HLTools.BSP
 		public ushort face_id;
 		public ushort face_num;
 
-		public static int Size {
-			get {
-				return sizeof(BSPNode);
-			}
-		}
-
 		unsafe public bool InBox(Vector3f vec)
 		{
 			fixed (short* vMin = nMin)
@@ -329,12 +311,6 @@ namespace HLTools.BSP
 
 		public short min;
 		public short max;
-
-		unsafe public static int Size {
-			get {
-				return sizeof(BoundBoxShort);
-			}
-		}
 	}
 
 	public struct FaceTextureInfo
@@ -361,12 +337,6 @@ namespace HLTools.BSP
 		public float distT;
 		public uint texture_id;
 		public uint animated;
-
-		unsafe public static int Size {
-			get {
-				return sizeof(FaceTextureInfo);
-			}
-		}
 	}
 
 	public struct Face
@@ -413,12 +383,6 @@ namespace HLTools.BSP
 		public byte light1;
 		public byte light2;
 		public int lightmap;
-
-		unsafe public static int Size {
-			get {
-				return sizeof(Face);
-			}
-		}
 	}
 
 	public struct ClipNode
@@ -433,12 +397,6 @@ namespace HLTools.BSP
 		public uint planenum;
 		public short front;
 		public short back;
-
-		unsafe public static int Size {
-			get {
-				return sizeof(ClipNode);
-			}
-		}
 	}
 
 	unsafe public struct BSPLeaf
@@ -471,12 +429,6 @@ namespace HLTools.BSP
 		public fixed short nMax[3];
 		public ushort iFirstMarkSurface;
 		public ushort nMarkSurfaces;
-
-		unsafe public static int Size {
-			get {
-				return sizeof(BSPLeaf);
-			}
-		}
 
 		public override string ToString()
 		{
@@ -523,11 +475,6 @@ namespace HLTools.BSP
 		public ushort vertex0;
 		public ushort vertex1;
 
-		unsafe public static int Size {
-			get {
-				return sizeof(Edge);
-			}
-		}
 	}
 
 	public struct Model
@@ -563,12 +510,6 @@ namespace HLTools.BSP
 		public int numleafs;
 		public int face_id;
 		public int face_num;
-
-		unsafe public static int Size {
-			get {
-				return sizeof(Model);
-			}
-		}
 	}
 
 	#endregion
