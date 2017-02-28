@@ -749,6 +749,11 @@ namespace HLTools.BSP
 			return Load<FaceTextureInfo>(TextureInfo, br.BReadFaceTextureInfo, OnLoadFaceTextureInfo);
 		}
 
+		public FaceTextureInfo[] LoadFaceTextureInfoArray()
+		{
+			return LoadArray<FaceTextureInfo>(TextureInfo, br.BReadFaceTextureInfo);
+		}
+
 		public bool LoadFaces()
 		{
 			return Load<Face>(Faces, br.BReadFace, OnLoadFace);
@@ -764,9 +769,19 @@ namespace HLTools.BSP
 			return Load<byte>(Lightmaps, br.ReadByte, OnLoadLightMap);
 		}
 
+		public byte[] LoadLightMapsArray()
+		{
+			return LoadArray<byte>(Lightmaps, br.ReadByte);
+		}
+
 		public bool LoadClipNodes()
 		{
 			return Load<ClipNode>(Clipnodes, br.BReadClipNode, OnLoadClipNode);
+		}
+
+		public ClipNode[] LoadClipNodesArray()
+		{
+			return LoadArray<ClipNode>(Clipnodes, br.BReadClipNode);
 		}
 
 		public bool LoadBSPLeaves()
@@ -812,6 +827,11 @@ namespace HLTools.BSP
 		public bool LoadModels()
 		{
 			return Load<Model>(Models, br.BReadModel, OnLoadModel);
+		}
+
+		public Model[] LoadModelsArray()
+		{
+			return LoadArray<Model>(Models, br.BReadModel);
 		}
 
 		#endregion
