@@ -1,7 +1,6 @@
 using System;
 using System.IO;
 using System.Text;
-using System.Runtime.InteropServices;
 
 using HLTools.Extensions;
 
@@ -12,29 +11,6 @@ namespace HLTools.BSP
 	/*
 	 * GoldSrc has bsp map version 30(0x1E)
 	 */
-
-	public static class BinaryReaderExtensions
-	{
-		unsafe public static T ReadStruct<T>(this Stream stream) where T : struct
-		{
-			int size = SizeHelper.SizeOf<T>();
-			var buff = new byte[size];
-			stream.Read(buff, 0, buff.Length);
-			fixed (byte* ptr = buff) {
-				return Marshal.PtrToStructure<T>((IntPtr)ptr);
-			}
-		}
-
-		unsafe public static T ReadStruct<T>(this BinaryReader stream) where T : struct
-		{
-			int size = SizeHelper.SizeOf<T>();
-			var buff = new byte[size];
-			stream.Read(buff, 0, buff.Length);
-			fixed (byte* ptr = buff) {
-				return Marshal.PtrToStructure<T>((IntPtr)ptr);
-			}
-		}
-	}
 
 	#region Structs
 

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Runtime.InteropServices;
 
 namespace HLTools.Extensions
 {
@@ -43,6 +44,15 @@ namespace HLTools.Extensions
 
 		#endregion
 
+		unsafe public static T ReadStruct<T>(this BinaryReader stream) where T : struct
+		{
+			int size = SizeHelper.SizeOf<T>();
+			var buff = new byte[size];
+			stream.Read(buff, 0, buff.Length);
+			fixed (byte* ptr = buff) {
+				return Marshal.PtrToStructure<T>((IntPtr)ptr);
+			}
+		}
 	}
 }
 
