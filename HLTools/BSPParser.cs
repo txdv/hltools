@@ -4,6 +4,8 @@ using System.Text;
 
 using HLTools.Extensions;
 
+using Vector3f = OpenTK.Vector3;
+
 namespace HLTools.BSP
 {
 	/*
@@ -172,20 +174,6 @@ namespace HLTools.BSP
 		public int size;
 	}
 
-	public struct Vector3f
-	{
-		public Vector3f(float x, float y, float z)
-		{
-			this.x = x;
-			this.y = y;
-			this.z = z;
-		}
-
-		public float x,y,z;
-
-		public static int Size { get { return sizeof(float) * 3; } }
-	}
-
 	public struct Plane
 	{
 		public Plane(Vector3f normal, float distance, int type)
@@ -199,9 +187,9 @@ namespace HLTools.BSP
 		public float distance;
 		public int type;
 
-		public static int Size
+		unsafe public static int Size
 		{
-			get { return Vector3f.Size + 4 + 8; }
+			get { return sizeof(Plane); }
 		}
 	}
 
@@ -216,7 +204,10 @@ namespace HLTools.BSP
 		public Vector3f minimum;
 		public Vector3f maximum;
 
-		public static int Size { get { return Vector3f.Size + Vector3f.Size; } }
+		unsafe public static int Size
+		{
+			get { return sizeof(Vector3f) + sizeof(Vector3f); }
+		}
 	}
 
 	public struct MipTexture
@@ -373,7 +364,9 @@ namespace HLTools.BSP
 		public byte light2;
 		public int lightmap;
 
-		public static int Size { get { return 2 + 2 + 4 + 2 + 2 + 4 + 4; } }
+		unsafe public static int Size {
+			get { return sizeof(Face); }
+		}
 	}
 
 	public struct ClipNode
@@ -440,7 +433,10 @@ namespace HLTools.BSP
 		public ushort vertex0;
 		public ushort vertex1;
 
-		public static int Size { get { return 2 + 2; } }
+		unsafe public static int Size
+		{
+			get { return sizeof(Edge); }
+		}
 	}
 
 	public struct Model
@@ -477,7 +473,10 @@ namespace HLTools.BSP
 		public int face_id;
 		public int face_num;
 
-		public static int Size { get { return BoundBox.Size + Vector3f.Size + 4 * 4 + 4 * 3; } }
+		unsafe public static int Size
+		{
+			get { return BoundBox.Size + sizeof(Vector3f) + 4 * 4 + 4 * 3; }
+		}
 	}
 
 	#endregion
