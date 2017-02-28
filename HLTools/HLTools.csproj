@@ -42,6 +42,7 @@
     <Compile Include="Verifier.cs" />
     <Compile Include="WADParser.cs" />
     <Compile Include="BinaryReaderExtensions.cs" />
+    <Compile Include="SizeHelper.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="OpenTK.dll.config" />

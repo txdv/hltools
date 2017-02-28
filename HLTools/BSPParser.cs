@@ -665,6 +665,18 @@ namespace HLTools.BSP
 			return Encoding.ASCII.GetString(br.ReadBytes((int)Entities.size));
 		}
 
+		unsafe private T[] LoadArray<T>(DirectoryEntry entry, Func<T> read) where T : struct
+		{
+			br.BaseStream.Seek(entry.offset, SeekOrigin.Begin);
+			int size = SizeHelper.SizeOf(typeof(T));
+			int n = entry.size / size;
+			var ret = new T[n];
+			for (int i = 0; i < n; i++) {
+				ret[i] = read();
+			}
+			return ret;
+		}
+
 		public bool LoadPlanes()
 		{
 			br.BaseStream.Seek(Planes.offset, SeekOrigin.Begin);
@@ -680,13 +692,7 @@ namespace HLTools.BSP
 
 		public Plane[] LoadPlanesArray()
 		{
-			br.BaseStream.Seek(Planes.offset, SeekOrigin.Begin);
-			int n = Planes.size / Plane.Size;
-			var planes = new Plane[n];
-			for (int i = 0; i < n; i++) {
-				planes[i] = br.ReadPlane();
-			}
-			return planes;
+			return LoadArray<Plane>(Planes, br.ReadPlane);
 		}
 
 		public bool LoadMipTextureOffsets()
@@ -740,15 +746,9 @@ namespace HLTools.BSP
 
 		unsafe public Vector3f[] LoadVerticesArray()
 		{
-			br.BaseStream.Seek(Vertices.offset, SeekOrigin.Begin);
-
-			int n = Vertices.size / sizeof(Vector3f);
-			var res = new Vector3f[n];
-			for (int i = 0; i < n; i++) {
-				res[i] = br.ReadVector3f ();
-			}
-			return res;
+			return LoadArray<Vector3f>(Vertices, br.ReadVector3f);
 		}
+
 
 		public bool LoadBSPNodes()
 		{
@@ -763,16 +763,7 @@ namespace HLTools.BSP
 
 		public BSPNode[] LoadBSPNodesArray()
 		{
-			br.BaseStream.Seek(Nodes.offset, SeekOrigin.Begin);
-
-			int n = Nodes.size / BSPNode.Size;
-			var nodes = new BSPNode[n];
-
-			for (int i = 0; i < n; i++) {
-				nodes[i] = br.BReadBSPNode();
-			}
-
-			return nodes;
+			return LoadArray<BSPNode>(Nodes, br.BReadBSPNode);
 		}
 
 		public bool LoadFaceTextureInfo()
@@ -799,13 +790,7 @@ namespace HLTools.BSP
 
 		public Face[] LoadFaceArray()
 		{
-			br.BaseStream.Seek(Faces.offset, SeekOrigin.Begin);
-			int n = Faces.size / Face.Size;
-			var faces = new Face[n];
-			for (int i = 0; i < n; i++) {
-				faces[i] = br.BReadFace();
-			}
-			return faces;
+			return LoadArray<Face>(Faces, br.BReadFace);
 		}
 
 		public bool LoadLightMaps()
@@ -844,13 +829,7 @@ namespace HLTools.BSP
 
 		public BSPLeaf[] LoadBSPLeavesArray()
 		{
-			br.BaseStream.Seek(Leaves.offset, SeekOrigin.Begin);
-			int n = Leaves.size / BSPLeaf.Size;
-			var leaves = new BSPLeaf[n];
-			for (int i = 0; i < n; i++) {
-				leaves[i] = br.BReadBSPLeaf();
-			}
-			return leaves;
+			return LoadArray<BSPLeaf>(Leaves, br.BReadBSPLeaf);
 		}
 
 		public bool LoadFaceList()
@@ -866,13 +845,7 @@ namespace HLTools.BSP
 
 		public short[] LoadFaceListArray()
 		{
-			br.BaseStream.Seek(FaceList.offset, SeekOrigin.Begin);
-			int n = FaceList.size / 2;
-			var res = new short[n];
-			for (int i = 0; i < n; i++) {
-				res[i] = br.BReadInt16();
-			}
-			return res;
+			return LoadArray<short>(FaceList, br.BReadInt16);
 		}
 
 		public bool LoadEdges()
@@ -888,13 +861,7 @@ namespace HLTools.BSP
 
 		public Edge[] LoadEdgesArray()
 		{
-			br.BaseStream.Seek(Edges.offset, SeekOrigin.Begin);
-			int n = Edges.size / Edge.Size;
-			var res = new Edge[n];
-			for (int i = 0; i < n; i++) {
-				res[i] = br.BReadEdge();
-			}
-			return res;
+			return LoadArray<Edge>(Edges, br.BReadEdge);
 		}
 
 		public bool LoadEdgeList()
@@ -910,14 +877,7 @@ namespace HLTools.BSP
 
 		public int[] LoadEdgeListArray()
 		{
-			br.BaseStream.Seek(EdgeList.offset, SeekOrigin.Begin);
-			int n = EdgeList.size / 2;
-			var res = new int[n];
-			for (int i = 0; i < n; i++)
-			{
-				res[i] = br.BReadInt32();
-			}
-			return res;
+			return LoadArray<int>(EdgeList, br.BReadInt32);
 		}
 
 		public bool LoadModels()
