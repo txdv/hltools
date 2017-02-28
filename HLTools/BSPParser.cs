@@ -78,13 +78,13 @@ namespace HLTools.BSP
 		public int offset4;
 	}
 
-	unsafe public struct BSPNode
+	public struct BSPNode
 	{
 		public int plane_id;
 		public short front;
 		public short back;
-		public fixed short nMin[3];
-		public fixed short nMax[3];
+		unsafe public fixed short nMin[3];
+		unsafe public fixed short nMax[3];
 		public ushort face_id;
 		public ushort face_num;
 
@@ -107,7 +107,7 @@ namespace HLTools.BSP
 			}
 		}
 
-		public override string ToString()
+		unsafe public override string ToString()
 		{
 			fixed (short* vMin = nMin)
 			fixed (short* vMax = nMax)
@@ -164,16 +164,16 @@ namespace HLTools.BSP
 		public short back;
 	}
 
-	unsafe public struct BSPLeaf
+	public struct BSPLeaf
 	{
 		public int nContents;
 		public int nVisOffset;
-		public fixed short nMin[3];
-		public fixed short nMax[3];
+		unsafe public fixed short nMin[3];
+		unsafe public fixed short nMax[3];
 		public ushort iFirstMarkSurface;
 		public ushort nMarkSurfaces;
 
-		public override string ToString()
+		unsafe public override string ToString()
 		{
 			fixed (short* vMin = nMin)
 			fixed (short* vMax = nMax)
