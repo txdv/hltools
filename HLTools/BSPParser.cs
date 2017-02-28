@@ -93,18 +93,33 @@ namespace HLTools.BSP
 			fixed (short* vMin = nMin)
 			fixed (short* vMax = nMax)
 			{
-				return (
-					(
-						(float)vMin[0] <= vec.X && vec.X <= (float)vMax[0] &&
-						(float)vMin[1] <= vec.Y && vec.Y <= (float)vMax[1] &&
-						(float)vMin[2] <= vec.Z && vec.Z <= (float)vMax[2]
-					) || (
-						(float)vMin[0] >= vec.X && vec.X >= (float)vMax[0] &&
-						(float)vMin[1] >= vec.Y && vec.Y >= (float)vMax[1] &&
-						(float)vMin[2] >= vec.Z && vec.Z >= (float)vMax[2]
-					)
-				) ;
+				return InBox(vec, vMin, vMax);
 			}
+		}
+
+		unsafe internal static bool InBox(Vector3f vec, short* vMin, short* vMax)
+		{
+			return (
+				(
+					(float)vMin[0] <= vec.X && vec.X <= (float)vMax[0] &&
+					(float)vMin[1] <= vec.Y && vec.Y <= (float)vMax[1] &&
+					(float)vMin[2] <= vec.Z && vec.Z <= (float)vMax[2]
+				) || (
+					(float)vMin[0] >= vec.X && vec.X >= (float)vMax[0] &&
+					(float)vMin[1] >= vec.Y && vec.Y >= (float)vMax[1] &&
+					(float)vMin[2] >= vec.Z && vec.Z >= (float)vMax[2]
+				)
+			) ;
+		}
+
+		unsafe internal static string ToString(short* vMin, short* vMax)
+		{
+			return string.Format(
+				"({0}:{1}) ({2}:{3}) ({4}:{5})",
+				vMin[0], vMax[0],
+				vMin[1], vMax[1],
+				vMin[2], vMax[2]
+			);
 		}
 
 		unsafe public override string ToString()
@@ -112,12 +127,7 @@ namespace HLTools.BSP
 			fixed (short* vMin = nMin)
 			fixed (short* vMax = nMax)
 			{
-				return string.Format(
-					"({0}:{1}) ({2}:{3}) ({4}:{5})",
-					vMin[0], vMax[0],
-					vMin[1], vMax[1],
-					vMin[2], vMax[2]
-				);
+				return ToString(vMin, vMax);
 			}
 		}
 	}
@@ -178,12 +188,7 @@ namespace HLTools.BSP
 			fixed (short* vMin = nMin)
 			fixed (short* vMax = nMax)
 			{
-				return string.Format(
-					"({0}:{1}) ({2}:{3}) ({4}:{5})",
-					vMin[0], vMax[0],
-					vMin[1], vMax[1],
-					vMin[2], vMax[2]
-				);
+				return BSPNode.ToString(vMin, vMax);
 			}
 		}
 
@@ -192,17 +197,7 @@ namespace HLTools.BSP
 			fixed (short* vMin = nMin)
 			fixed (short* vMax = nMax)
 			{
-				return (
-					(
-						(float)vMin[0] <= vec.X && vec.X <= (float)vMax[0] &&
-						(float)vMin[1] <= vec.Y && vec.Y <= (float)vMax[1] &&
-						(float)vMin[2] <= vec.Z && vec.Z <= (float)vMax[2]
-					) || (
-						(float)vMin[0] >= vec.X && vec.X >= (float)vMax[0] &&
-						(float)vMin[1] >= vec.Y && vec.Y >= (float)vMax[1] &&
-						(float)vMin[2] >= vec.Z && vec.Z >= (float)vMax[2]
-					)
-				) ;
+				return BSPNode.InBox(vec, vMin, vMax);
 			}
 		}
 	}
