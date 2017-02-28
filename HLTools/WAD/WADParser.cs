@@ -10,26 +10,6 @@ namespace HLTools.WAD
 	[StructLayout(LayoutKind.Sequential, Pack=1)]
 	public struct WADFile
 	{
-		public WADFile(
-			uint offset,
-			uint compressedFileSize,
-			uint uncompressedFileSize,
-			byte fileType,
-			byte compressionType,
-			byte padding,
-			byte padding2,
-			string filename
-		) {
-			this.offset = offset;
-			this.compressedFileSize = compressedFileSize;
-			this.uncomrepssedFileSize = uncompressedFileSize;
-			this.fileType = fileType;
-			this.compressionType = compressionType;
-			this.padding = padding;
-			this.padding2 = padding;
-			this.filename = filename;
-		}
-
 		public uint offset;
 		public uint compressedFileSize;
 		public uint uncomrepssedFileSize;
@@ -37,34 +17,15 @@ namespace HLTools.WAD
 		public byte compressionType;
 		public byte padding;
 		public byte padding2;
+		unsafe public fixed sbyte filename[16];
 
 		// TODO: evaluate wad files on how correctly they save stuff
-		public string Filename {
+		unsafe public string Filename {
 			get {
-				int index = filename.IndexOf('\0');
-				if (index >= 0) {
-					return filename.Substring(0, index);
+				fixed (sbyte* ptr = filename) {
+					return new string(ptr);
 				}
-				return filename;
 			}
-		}
-		public string filename;
-	}
-
-	public static class BinaryReaderExtensions
-	{
-		public static WADFile ReadWADFile(this BinaryReader br)
-		{
-			return new WADFile(
-				br.BReadUInt32(),
-				br.BReadUInt32(),
-				br.BReadUInt32(),
-				br.ReadByte(),
-				br.ReadByte(),
-				br.ReadByte(),
-				br.ReadByte(),
-				Encoding.ASCII.GetString(br.ReadBytes(16)).TrimEnd('\0')
-			);
 		}
 	}
 
@@ -93,7 +54,7 @@ namespace HLTools.WAD
 			if (OnLoadFile != null) {
 				br.BaseStream.Seek(Offset, SeekOrigin.Begin);
 				for (int i = 0; i < FileCount; i++) {
-					OnLoadFile(br.ReadWADFile());
+					OnLoadFile(br.ReadStruct<WADFile>());
 				}
 			}
 		}
@@ -104,7 +65,7 @@ namespace HLTools.WAD
 			var n = FileCount;
 			var files = new WADFile[n];
 			for (int i = 0; i < n; i++) {
-				files[i] = br.ReadWADFile();
+				files[i] = br.ReadStruct<WADFile>();
 			}
 			return files;
 		}
