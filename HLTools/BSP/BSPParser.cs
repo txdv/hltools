@@ -31,6 +31,31 @@ namespace HLTools.BSP
 	{
 		public Vector3f minimum;
 		public Vector3f maximum;
+
+		unsafe public bool InBox(Vector3f vec)
+		{
+			return (
+				(
+					minimum.X <= vec.X && vec.X <= maximum.X &&
+					minimum.Y <= vec.Y && vec.Y <= maximum.Y &&
+					minimum.Z <= vec.Z && vec.Z <= maximum.Z
+				) || (
+					minimum.X >= vec.X && vec.X >= maximum.X &&
+					minimum.Y >= vec.Y && vec.Y >= maximum.Y &&
+					minimum.Z >= vec.Z && vec.Z >= maximum.Z
+				)
+			);
+		}
+
+		unsafe public override string ToString()
+		{
+			return string.Format(
+				"({0}:{1}) ({2}:{3}) ({4}:{5})",
+				minimum.X, maximum.X,
+				minimum.Y, maximum.Y,
+				minimum.Z, maximum.Z
+			);
+		}
 	}
 
 	public struct MipTexture
@@ -59,43 +84,33 @@ namespace HLTools.BSP
 		public int plane_id;
 		public short front;
 		public short back;
-		unsafe public fixed short nMin[3];
-		unsafe public fixed short nMax[3];
+		public BoundBoxShort bound_box;
 		public ushort face_id;
 		public ushort face_num;
+	}
+
+	public struct BoundBoxShort
+	{
+		unsafe public fixed short nMin[3];
+		unsafe public fixed short nMax[3];
 
 		unsafe public bool InBox(Vector3f vec)
 		{
 			fixed (short* vMin = nMin)
 			fixed (short* vMax = nMax)
 			{
-				return InBox(vec, vMin, vMax);
+				return (
+					(
+						(float)vMin[0] <= vec.X && vec.X <= (float)vMax[0] &&
+						(float)vMin[1] <= vec.Y && vec.Y <= (float)vMax[1] &&
+						(float)vMin[2] <= vec.Z && vec.Z <= (float)vMax[2]
+					) || (
+						(float)vMin[0] >= vec.X && vec.X >= (float)vMax[0] &&
+						(float)vMin[1] >= vec.Y && vec.Y >= (float)vMax[1] &&
+						(float)vMin[2] >= vec.Z && vec.Z >= (float)vMax[2]
+					)
+				);
 			}
-		}
-
-		unsafe internal static bool InBox(Vector3f vec, short* vMin, short* vMax)
-		{
-			return (
-				(
-					(float)vMin[0] <= vec.X && vec.X <= (float)vMax[0] &&
-					(float)vMin[1] <= vec.Y && vec.Y <= (float)vMax[1] &&
-					(float)vMin[2] <= vec.Z && vec.Z <= (float)vMax[2]
-				) || (
-					(float)vMin[0] >= vec.X && vec.X >= (float)vMax[0] &&
-					(float)vMin[1] >= vec.Y && vec.Y >= (float)vMax[1] &&
-					(float)vMin[2] >= vec.Z && vec.Z >= (float)vMax[2]
-				)
-			) ;
-		}
-
-		unsafe internal static string ToString(short* vMin, short* vMax)
-		{
-			return string.Format(
-				"({0}:{1}) ({2}:{3}) ({4}:{5})",
-				vMin[0], vMax[0],
-				vMin[1], vMax[1],
-				vMin[2], vMax[2]
-			);
 		}
 
 		unsafe public override string ToString()
@@ -103,15 +118,14 @@ namespace HLTools.BSP
 			fixed (short* vMin = nMin)
 			fixed (short* vMax = nMax)
 			{
-				return ToString(vMin, vMax);
+				return string.Format(
+					"({0}:{1}) ({2}:{3}) ({4}:{5})",
+					vMin[0], vMax[0],
+					vMin[1], vMax[1],
+					vMin[2], vMax[2]
+				);
 			}
 		}
-	}
-
-	public struct BoundBoxShort
-	{
-		public short min;
-		public short max;
 	}
 
 	public struct FaceTextureInfo
@@ -154,28 +168,10 @@ namespace HLTools.BSP
 	{
 		public int nContents;
 		public int nVisOffset;
-		unsafe public fixed short nMin[3];
-		unsafe public fixed short nMax[3];
+		public BoundBoxShort bound_box;
 		public ushort iFirstMarkSurface;
 		public ushort nMarkSurfaces;
 
-		unsafe public override string ToString()
-		{
-			fixed (short* vMin = nMin)
-			fixed (short* vMax = nMax)
-			{
-				return BSPNode.ToString(vMin, vMax);
-			}
-		}
-
-		unsafe public bool InBox(Vector3f vec)
-		{
-			fixed (short* vMin = nMin)
-			fixed (short* vMax = nMax)
-			{
-				return BSPNode.InBox(vec, vMin, vMax);
-			}
-		}
 	}
 
 	public struct Edge
@@ -186,8 +182,7 @@ namespace HLTools.BSP
 
 	public struct Model
 	{
-		public BoundBox bound;
-		public Vector3f origin;
+		public BoundBoxShort bound_box;
 		public int node_id0;
 		public int node_id1;
 		public int node_id2;
