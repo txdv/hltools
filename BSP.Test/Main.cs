@@ -63,9 +63,9 @@ namespace HLTools.BSP.Test
 
 		public static void LoadBSPMap(string file)
 		{
-			FileStream fs = File.OpenRead(file);
+			var fs = File.OpenRead(file);
 			Console.WriteLine ("Parsing bsp file: {0}\n", fs.Name);
-			BSPParser p = new BSPParser(fs);
+			var p = new BSPParserEvents(fs);
 			Console.WriteLine ("Loading Directory table");
 			if (p.LoadDirectoryTables())
 			{
