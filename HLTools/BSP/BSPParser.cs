@@ -60,15 +60,7 @@ namespace HLTools.BSP
 
 	public struct MipTexture
 	{
-		unsafe public string Name {
-			get {
-				fixed (sbyte* ptr = name) {
-					return new string(ptr);
-				}
-			}
-		}
-
-		unsafe public fixed byte name[16];
+		public StructString name;
 
 		public int width;
 		public int height;

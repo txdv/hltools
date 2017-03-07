@@ -297,7 +297,7 @@ namespace HLTools
 
 			var textureList = bp.LoadMipTexturesArray()
 				.Where(t => t.offset1 == 0 && t.offset2 == 0 && t.offset3 == 0 && t.offset4 == 0)
-				.Select(t => t.Name)
+				.Select(t => t.name.ToString())
 				.ToList();
 
 			string entities = bp.ReadEntities();
@@ -349,7 +349,7 @@ namespace HLTools
 				List<string> existingFilenames = new List<string>();
 				foreach (var wadFile in existingWads) {
 					WADParser wp = new WADParser(File.OpenRead(wadFile.ToString(BaseDirectory)));
-					existingFilenames.AddRange(wp.LoadFileArray().Select(f => f.Filename.ToLower()));
+					existingFilenames.AddRange(wp.LoadFileArray().Select(f => f.filename.ToString().ToLower()));
 					wp.Close();
 				}
 

@@ -17,16 +17,7 @@ namespace HLTools.WAD
 		public byte compressionType;
 		public byte padding;
 		public byte padding2;
-		unsafe public fixed sbyte filename[16];
-
-		// TODO: evaluate wad files on how correctly they save stuff
-		unsafe public string Filename {
-			get {
-				fixed (sbyte* ptr = filename) {
-					return new string(ptr);
-				}
-			}
-		}
+		public StructString filename;
 	}
 
 	public class WADParser

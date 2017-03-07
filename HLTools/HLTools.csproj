@@ -45,6 +45,7 @@
     <Compile Include="BSP\EntityParser.cs" />
     <Compile Include="WAD\WADParser.cs" />
     <Compile Include="BSP\BSPParserEvents.cs" />
+    <Compile Include="StructString.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="OpenTK.dll.config" />
