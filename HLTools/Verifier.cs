@@ -452,21 +452,21 @@ namespace HLTools
 				#endregion
 			}
 
-			List<string> usedFileList = new List<string>();
-			usedFileList.AddRange(res.UsedSprites);
-			usedFileList.AddRange(res.UsedSounds);
-			usedFileList.AddRange(res.UsedModels);
-			usedFileList.Sort();
-			res.UsedFileList = usedFileList.ToArray();
+			res.UsedFileList = Sort(res.UsedSprites, res.UsedSounds, res.UsedModels);
 
-			List<string> missingFileList = new List<string>();
-			missingFileList.AddRange(res.MissingSprites);
-			missingFileList.AddRange(res.MissingSounds);
-			missingFileList.AddRange(res.MissingModels);
-			missingFileList.Sort();
-			res.MissingFileList = missingFileList.ToArray();
+			res.MissingFileList = Sort(res.MissingSprites, res.MissingSounds, res.MissingModels);
 
 			return res;
+		}
+
+		T[] Sort<T>(params IEnumerable<T>[] parameters)
+		{
+			var list = new List<T>();
+			foreach (var param in parameters) {
+				list.AddRange(param);
+			}
+			list.Sort();
+			return list.ToArray();
 		}
 	}
 }
