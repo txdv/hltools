@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Collections.Generic;
+using System.Linq;
 using HLTools.BSP;
 using HLTools.WAD;
 
@@ -294,14 +295,10 @@ namespace HLTools
 				throw new Exception("Malformed file");
 			}
 
-			List<string> textureList = new List<string>();
-			bp.LoadMipTextureOffsets();
-			bp.OnLoadMipTexture += (texture) => {
-				if ((texture.offset1 == 0) && (texture.offset2 == 0) && (texture.offset3 == 0) && (texture.offset4 == 0)) {
-					textureList.Add(texture.Name);
-				}
-			};
-			bp.LoadMipTextures();
+			var textureList = bp.LoadMipTexturesArray()
+				.Where(t => t.offset1 == 0 && t.offset2 == 0 && t.offset3 == 0 && t.offset4 == 0)
+				.Select(t => t.Name)
+				.ToList();
 
 			string entities = bp.ReadEntities();
 
@@ -352,10 +349,7 @@ namespace HLTools
 				List<string> existingFilenames = new List<string>();
 				foreach (var wadFile in existingWads) {
 					WADParser wp = new WADParser(File.OpenRead(wadFile.ToString(BaseDirectory)));
-					wp.OnLoadFile += (file) => {
-						existingFilenames.Add(file.Filename.ToLower());
-					};
-					wp.LoadFiles();
+					existingFilenames.AddRange(wp.LoadFileArray().Select(f => f.Filename.ToLower()));
 					wp.Close();
 				}
 
