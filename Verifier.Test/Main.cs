@@ -9,9 +9,11 @@ namespace HLTools.Test
 	{
 		public static int CalculateBadPoints(VerifierResult res)
 		{
-			return res.MalformedWadFiles.Length +
-			        res.MisnamedModDirs.Length * 2 +
-			        res.NotExistingFiles.Length * 4;
+			return (
+				res.MalformedWadFiles.Length +
+				res.MisnamedModDirs.Length * 2 +
+				res.NotExistingFiles.Length * 4
+			);
 		}
 
 		public static void Handle(Verifier v, string file)
